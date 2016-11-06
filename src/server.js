@@ -26,6 +26,13 @@ const tokens = ['123']
 
 // =============== VIEWS
 
+app.get('/game/:gameId/play-by-play', (request, response) => {
+  const id = request.params.gameId
+  Game.findOne({ _id: id }).exec()
+    .then((game) => {
+      response.render('playByPlay.html', { playHistory: game.playHistory })
+    })
+})
 
 // ================ REST stuff
 
