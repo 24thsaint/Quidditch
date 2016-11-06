@@ -27,7 +27,10 @@ const tokens = ['123']
 // =============== VIEWS
 
 app.get('/', (request, response) => {
-  response.render('login.html')
+  Game.find({}).exec()
+    .then((games) => {
+      response.render('login.html', { games })
+    })
 })
 
 app.get('/game/:gameId/box-score', (request, response) => {
