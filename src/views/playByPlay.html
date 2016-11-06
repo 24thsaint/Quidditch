@@ -1,0 +1,36 @@
+{% extends 'main.html' %}
+{% block title %}Play By Play{% endblock %}
+
+{% block scripts %}
+  <script type="text/javascript">
+
+  var ws = new WebSocket("ws://localhost:1236/socket/play-by-play");
+
+  ws.onmessage = function (evt)
+  {
+    var play = JSON.parse(evt.data);
+    console.log(play)
+    $('#plays > tbody:last-child').append('<tr><td>'+ new Date(play.time).toLocaleString() +' - '+ play.message +'</td></tr>')
+  };
+
+  </script>
+{% endblock %}
+
+{% block body %}
+  <div class="col-md-4">
+    Play by play stats.
+  </div>
+  <div class="col-md-8">
+    <table class="table table-hover table-striped" id="plays">
+      <tbody>
+        {% for play in playHistory %}
+          <tr>
+            <td>
+              {{ play.time.toLocaleString() }} - {{ play.message }}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
