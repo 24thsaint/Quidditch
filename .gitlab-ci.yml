@@ -11,4 +11,4 @@ variables:
 all_tests:
   script:
   - npm install && npm install --only=dev
-  - npm test && npm run integration-test
+  - npm test && npm run test:ci
