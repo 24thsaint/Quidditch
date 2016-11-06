@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register ./src/tests/*.js",
-    "test:ci": "NODE_ENV=ci mocha --compilers js:babel-core/register ./src/integration-tests/*.js",
+    "test": "mocha --compilers js:babel-core/register ./src/tests/*.test.js",
+    "test:ci": "NODE_ENV=ci mocha --compilers js:babel-core/register ./src/integration-tests/*.test.js",
     "watch": "babel src/ --out-dir dist/ --watch",
     "seed": "babel seed.js -o seed-dist.js && node seed-dist.js",
     "start": "node dist/"
