@@ -28,6 +28,7 @@ const tokens = ['123']
 
 app.get('/', (request, response) => {
   response.render('login.html')
+})
 
 app.get('/game/:gameId/box-score', (request, response) => {
   const id = request.params.gameId
