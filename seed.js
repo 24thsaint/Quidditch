@@ -103,30 +103,33 @@ teams.push(blueTeam)
 
 const snitch = new Snitch()
 snitch.save()
+  .then(() => {
+    for (const player of team1) {
+      player.save()
+    }
 
-for (const player of team1) {
-  player.save()
-}
+    for (const player of team2) {
+      player.save()
+    }
 
-for (const player of team2) {
-  player.save()
-}
+    redTeam.save()
+    blueTeam.save()
 
-redTeam.save()
-blueTeam.save()
+    for (const player of team1) {
+      player.team = redTeam
+      player.save()
+    }
 
-for (const player of team1) {
-  player.team = redTeam
-  player.save()
-}
+    for (const player of team2) {
+      player.team = blueTeam
+      player.save()
+    }
 
-for (const player of team2) {
-  player.team = blueTeam
-  player.save()
-}
-
-game = new Game({ teams, snitch })
-game.start(new Date())
-game.save()
-
-console.log('Database seed successful')
+    game = new Game({ teams, snitch })
+    game.start(new Date())
+    game.save()
+      .then(() => {
+        console.log('Database seed successful')
+        process.exit()
+      })
+  })

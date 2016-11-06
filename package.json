@@ -8,7 +8,7 @@
     "test:ci": "NODE_ENV=ci mocha --compilers js:babel-core/register ./src/integration-tests/*.test.js",
     "watch": "babel src/ --out-dir dist/ --watch",
     "seed": "babel seed.js -o seed-dist.js && node seed-dist.js",
-    "start": "node dist/"
+    "start": "babel src/ --out-dir dist/ && babel seed.js -o seed-dist.js && node seed-dist.js && node dist/"
   },
   "author": "",
   "license": "ISC",
