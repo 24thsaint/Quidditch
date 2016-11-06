@@ -1,0 +1,25 @@
+{% extends 'main.html' %}
+{% block title %}Score Board{% endblock %}
+
+{% block scripts %}
+  <script type="text/javascript">
+
+  var ws = new WebSocket("ws://localhost:1235/socket/box-score");
+ 
+  ws.onmessage = function (evt)
+  {
+    var data = JSON.parse(evt.data);
+    document.getElementById(data.teamId).innerHTML = data.score
+  };
+
+  </script>
+{% endblock %}
+
+{% block body %}
+  {% for tally in tallies %}
+    <div class="col-md-6 text-center well">
+      <h1>{{ tally.teamName }}</h1>
+      <h1 class="bg-primary" id="{{ tally.teamId.toString() }}">{{ tally.score }}</h1>
+    </div>
+  {% endfor %}
+{% endblock %}
