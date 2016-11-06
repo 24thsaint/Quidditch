@@ -26,6 +26,30 @@ const tokens = ['123']
 
 // =============== VIEWS
 
+app.get('/game/:gameId/box-score', (request, response) => {
+  const id = request.params.gameId
+
+  Game.findOne({ _id: id }).populate({
+    path: 'teams',
+    model: 'Team',
+    populate: {
+      path: 'players',
+      model: 'Player',
+    },
+  }).exec()
+    .then((game) => {
+      const tallies = []
+      for (const team of game.teams) {
+        const temp = {
+          teamId: team._id, //eslint-disable-line
+          teamName: team.name,
+          score: team.score,
+        }
+        tallies.push(temp)
+      }
+      response.render('boxScore.html', { tallies })
+    })
+})
 
 // ================ REST stuff
 
@@ -34,6 +58,10 @@ app.get('/games/all', (request, response) => {
     .then((games) => {
       response.writeHead(200, { 'Content-Type': 'application/json' })
       response.end(JSON.stringify(games, null, 2))
+    })
+
+    consolidate.swig('./views/login.html', {}, (err, html) {
+      response.send(html)
     })
 })
 
