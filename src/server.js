@@ -26,6 +26,28 @@ const tokens = ['123']
 
 // =============== VIEWS
 
+app.get('/game/:gameId', (request, response) => {
+  const id = request.params.gameId
+
+  Game.findOne({ _id: id }).populate({
+    path: 'teams',
+    model: 'Team',
+    populate: {
+      path: 'players',
+      model: 'Player',
+    },
+  }).populate({
+    path: 'snitch',
+    model: 'Snitch',
+    populate: {
+      path: 'caughtBy',
+      model: 'Player',
+    },
+  }).exec()
+    .then((game) => {
+      response.render('commentatorDashboard.html', { teams: game.teams, gameId: id, snitch: game.snitch })
+    })
+})
 
 // ================ REST stuff
 
