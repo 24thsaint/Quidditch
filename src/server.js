@@ -445,5 +445,5 @@ app.get('/css/bootstrap.min.css', (request, response) => {
 })
 // ================
 
-app.listen(80)
+app.listen(process.env.PORT || 1234)
 console.log('Server running over port 1234')
