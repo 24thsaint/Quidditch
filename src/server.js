@@ -8,6 +8,8 @@ import Player from '../dist/models/Player'
 import Snitch from '../dist/models/Snitch'
 import Game from '../dist/models/Game'
 
+console.log(process.env)
+
 const WebSocketServer = require('ws').Server
 
 const boxScoreWebSocket = new WebSocketServer({ host: 'localhost', port: '1235', path: '/socket/box-score' })
