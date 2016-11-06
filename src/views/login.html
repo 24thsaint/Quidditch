@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+{% block title %}Login{% endblock %}
+
+{% block body %}
+  <div class="col-md-4">
+    <form role="form" class="" action="" method="post">
+      <label for="username">Username</label>
+      <input class="form-control" type="text" name="username" value="" />
+      <label for="password">Password</label>
+      <input class="form-control" type="text" name="password" value="" />
+      <br />
+      <button type="submit" class="btn btn-primary" name="submit-button">Login</button>
+    </form>
+  </div>
+{% endblock %}
