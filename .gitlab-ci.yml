@@ -1,0 +1,14 @@
+image: node:6.9.1
+cache:
+  key: "$CI_BUILD_REF_NAME"
+  paths:
+  - node_modules/
+services:
+  - mongo
+variables:
+  MONGO_URI: "mongodb://mongo/quidditch"
+  NODE_ENV: "ci"
+all_tests:
+  script:
+  - npm install && npm install --only=dev
+  - npm test && npm run integration-test
