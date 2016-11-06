@@ -5,7 +5,7 @@ let mongoURI = ''
 
 switch (process.env.NODE_ENV) {
   case 'production' :
-    mongoURI = 'mongodb://mongo/quidditch'
+    mongoURI = 'mongodb://24thsaint:hydr0gen@ds139937.mlab.com:39937/quidditch'
     break
   case 'ci' :
     mongoURI = 'mongodb://mongo/quidditch'
