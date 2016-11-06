@@ -53,13 +53,36 @@ app.get('/game/:gameId/box-score', (request, response) => {
       }
       response.render('boxScore.html', { tallies })
     })
-  })
+})
 
 app.get('/game/:gameId/play-by-play', (request, response) => {
   const id = request.params.gameId
   Game.findOne({ _id: id }).exec()
     .then((game) => {
       response.render('playByPlay.html', { playHistory: game.playHistory })
+    })
+})
+
+app.get('/game/:gameId', (request, response) => {
+  const id = request.params.gameId
+
+  Game.findOne({ _id: id }).populate({
+    path: 'teams',
+    model: 'Team',
+    populate: {
+      path: 'players',
+      model: 'Player',
+    },
+  }).populate({
+    path: 'snitch',
+    model: 'Snitch',
+    populate: {
+      path: 'caughtBy',
+      model: 'Player',
+    },
+  }).exec()
+    .then((game) => {
+      response.render('commentatorDashboard.html', { teams: game.teams, gameId: id, snitch: game.snitch })
     })
 })
 
