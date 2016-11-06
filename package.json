@@ -7,8 +7,10 @@
     "test": "mocha --compilers js:babel-core/register ./src/tests/*.test.js",
     "test:ci": "NODE_ENV=ci mocha --compilers js:babel-core/register ./src/integration-tests/*.test.js",
     "watch": "babel src/ --out-dir dist/ --watch",
-    "seed": "babel seed.js -o seed-dist.js && node seed-dist.js",
-    "start": "dir && ./node_modules/.bin/babel src/ --out-dir dist/ && ./node_modules/.bin/babel seed.js -o seed-dist.js && node seed-dist.js && node dist/"
+    "build": "./node_modules/.bin/babel src/ --out-dir dist/",
+    "seed": "./node_modules/.bin/babel seed.js -o seed-dist.js && node seed-dist.js",
+    "postinstall": "npm run build && npm run seed",
+    "start": "node dist/"
   },
   "author": "",
   "license": "ISC",
