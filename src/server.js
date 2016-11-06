@@ -94,10 +94,6 @@ app.get('/games/all', (request, response) => {
       response.writeHead(200, { 'Content-Type': 'application/json' })
       response.end(JSON.stringify(games, null, 2))
     })
-
-    consolidate.swig('./views/login.html', {}, (err, html) {
-      response.send(html)
-    })
 })
 
 app.get('/game/:gameId/team/all', (request, response) => {
