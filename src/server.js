@@ -26,7 +26,6 @@ const tokens = ['123']
 
 // =============== VIEWS
 
-<<<<<<< HEAD
 app.get('/', (request, response) => {
   response.render('login.html')
 })
