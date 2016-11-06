@@ -26,6 +26,7 @@ const tokens = ['123']
 
 // =============== VIEWS
 
+<<<<<<< HEAD
 app.get('/', (request, response) => {
   response.render('login.html')
 })
@@ -52,6 +53,14 @@ app.get('/game/:gameId/box-score', (request, response) => {
         tallies.push(temp)
       }
       response.render('boxScore.html', { tallies })
+    })
+  })
+
+app.get('/game/:gameId/play-by-play', (request, response) => {
+  const id = request.params.gameId
+  Game.findOne({ _id: id }).exec()
+    .then((game) => {
+      response.render('playByPlay.html', { playHistory: game.playHistory })
     })
 })
 
