@@ -2,151 +2,151 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block scripts %}
-  <script type="text/javascript">
-  var currentPlayer = undefined
-  var currentButton = undefined
+<script type="text/javascript">
+var currentPlayer = undefined
+var currentButton = undefined
 
-  function goal() {
-    $.ajax({
-      url: location.protocol +"//"+ window.location.host +"/game/"+ $("#gameId").val() +"/chaser/goal/123",
-      type: "POST",
-      data: JSON.stringify({ chaser: currentPlayer }),
-      contentType:"application/json; charset=utf-8",
-      dataType:"json",
-      success: function(response){
-        var notif = document.getElementById('notification')
-        if (response.status === 'OK') {
-          document.getElementById(response.teamId).innerHTML = response.score
-          notif.className = "";
-          notif.className = "alert alert-success";
-          $("#notification").fadeIn()
-          $("#notification").html('<b>Goal!</b> '+response.player+' scored a goal for '+response.team+'.')
-          $("#notification").delay(2000).slideUp()
-        } else {
-          notif.className = "";
-          notif.className = "alert alert-danger";
-          $("#notification").fadeIn()
-          $("#notification").html('<b>Warning!</b> '+response.message+'.')
-          $("#notification").delay(2000).slideUp()
-        }
+function goal() {
+  $.ajax({
+    url: location.protocol +"//"+ window.location.host +"/game/"+ $("#gameId").val() +"/chaser/goal/123",
+    type: "POST",
+    data: JSON.stringify({ chaser: currentPlayer }),
+    contentType:"application/json; charset=utf-8",
+    dataType:"json",
+    success: function(response){
+      var notif = document.getElementById('notification')
+      if (response.status === 'OK') {
+        document.getElementById(response.teamId).innerHTML = response.score
+        notif.className = "";
+        notif.className = "alert alert-success";
+        $("#notification").fadeIn()
+        $("#notification").html('<b>Goal!</b> '+response.player+' scored a goal for '+response.team+'.')
+        $("#notification").delay(2000).slideUp()
+      } else {
+        notif.className = "";
+        notif.className = "alert alert-danger";
+        $("#notification").fadeIn()
+        $("#notification").html('<b>Warning!</b> '+response.message+'.')
+        $("#notification").delay(2000).slideUp()
       }
-    })
-  }
-
-  function miss() {
-    $.ajax({
-      url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/chaser/miss/123",
-      type: "POST",
-      data: JSON.stringify({ chaser: currentPlayer }),
-      contentType:"application/json; charset=utf-8",
-      dataType:"json",
-      success: function(response){
-        var notif = document.getElementById('notification')
-        if (response.status === 'OK') {
-          notif.className = "";
-          notif.className = "alert alert-warning";
-          $("#notification").fadeIn()
-          $("#notification").html('<b>Missed!</b> '+response.player+' missed a goal.')
-          $("#notification").delay(2000).slideUp()
-        } else {
-          notif.className = "";
-          notif.className = "alert alert-danger";
-          $("#notification").fadeIn()
-          $("#notification").html('<b>Warning!</b> '+response.message+'.')
-          $("#notification").delay(2000).slideUp()
-        }
-      }
-    })
-  }
-
-  function block() {
-    $.ajax({
-      url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/keeper/block/123",
-      type: "POST",
-      data: JSON.stringify({ keeper: currentPlayer }),
-      contentType:"application/json; charset=utf-8",
-      dataType:"json",
-      success: function(response){
-        var notif = document.getElementById('notification')
-        if (response.status === 'OK') {
-          notif.className = "";
-          notif.className = "alert alert-info";
-          $("#notification").fadeIn()
-          $("#notification").html('<b>Blocked!</b> '+response.player+' blocked an attempted goal.')
-          $("#notification").delay(2000).slideUp()
-        } else {
-          notif.className = "";
-          notif.className = "alert alert-danger";
-          $("#notification").fadeIn()
-          $("#notification").html('<b>Warning!</b> '+response.message+'.')
-          $("#notification").delay(2000).slideUp()
-        }
-      }
-    })
-  }
-
-  function end() {
-    $.ajax({
-      url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/seeker/catchSnitch/123",
-      type: "POST",
-      data: JSON.stringify({ seeker: currentPlayer }),
-      contentType:"application/json; charset=utf-8",
-      dataType:"json",
-      success: function(response){
-        var notif = document.getElementById('notification')
-        if (response.status === 'OK') {
-          document.getElementById(response.teamId).innerHTML = response.score
-          notif.className = "";
-          notif.className = "alert alert-success";
-          $("#notification").fadeIn()
-          $("#notification").html('<b>GAME ENDED ON '+new Date(response.endTime).toLocaleString()+'!</b> Snitch was caught by '+response.player+'.')
-        } else {
-          notif.className = "";
-          notif.className = "alert alert-danger";
-          $("#notification").fadeIn()
-          $("#notification").html('<b>Warning!</b> '+response.message+'.')
-          $("#notification").delay(2000).slideUp()
-        }
-      }
-    })
-  }
-
-  function snitchAppeared() {
-    $.ajax({
-      url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/snitch/appeared/123",
-      type: "POST",
-      contentType:"application/json; charset=utf-8",
-      dataType:"json",
-      success: function(response){
-        var notif = document.getElementById('notification')
-        if (response.status === 'OK') {
-          notif.className = "";
-          notif.className = "alert alert-info";
-          $("#notification").fadeIn()
-          $("#notification").html('<b>Snitch has appeared</b> on <br /> '+new Date(response.appearanceDate).toLocaleString()+'')
-          $("#notification").delay(2000).slideUp()
-        } else {
-          notif.className = "";
-          notif.className = "alert alert-danger";
-          $("#notification").fadeIn()
-          $("#notification").html('<b>Warning!</b> '+response.message+'.')
-          $("#notification").delay(2000).slideUp()
-        }
-      }
-    })
-  }
-
-  function select(button, player) {
-    if (currentButton !== undefined) {
-      currentButton.className = "";
-      currentButton.className = "btn btn-default";
     }
-    currentPlayer = player
-    currentButton = button
-    button.className = "";
-    button.className = "btn btn-primary";
+  })
+}
+
+function miss() {
+  $.ajax({
+    url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/chaser/miss/123",
+    type: "POST",
+    data: JSON.stringify({ chaser: currentPlayer }),
+    contentType:"application/json; charset=utf-8",
+    dataType:"json",
+    success: function(response){
+      var notif = document.getElementById('notification')
+      if (response.status === 'OK') {
+        notif.className = "";
+        notif.className = "alert alert-warning";
+        $("#notification").fadeIn()
+        $("#notification").html('<b>Missed!</b> '+response.player+' missed a goal.')
+        $("#notification").delay(2000).slideUp()
+      } else {
+        notif.className = "";
+        notif.className = "alert alert-danger";
+        $("#notification").fadeIn()
+        $("#notification").html('<b>Warning!</b> '+response.message+'.')
+        $("#notification").delay(2000).slideUp()
+      }
+    }
+  })
+}
+
+function block() {
+  $.ajax({
+    url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/keeper/block/123",
+    type: "POST",
+    data: JSON.stringify({ keeper: currentPlayer }),
+    contentType:"application/json; charset=utf-8",
+    dataType:"json",
+    success: function(response){
+      var notif = document.getElementById('notification')
+      if (response.status === 'OK') {
+        notif.className = "";
+        notif.className = "alert alert-info";
+        $("#notification").fadeIn()
+        $("#notification").html('<b>Blocked!</b> '+response.player+' blocked an attempted goal.')
+        $("#notification").delay(2000).slideUp()
+      } else {
+        notif.className = "";
+        notif.className = "alert alert-danger";
+        $("#notification").fadeIn()
+        $("#notification").html('<b>Warning!</b> '+response.message+'.')
+        $("#notification").delay(2000).slideUp()
+      }
+    }
+  })
+}
+
+function end() {
+  $.ajax({
+    url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/seeker/catchSnitch/123",
+    type: "POST",
+    data: JSON.stringify({ seeker: currentPlayer }),
+    contentType:"application/json; charset=utf-8",
+    dataType:"json",
+    success: function(response){
+      var notif = document.getElementById('notification')
+      if (response.status === 'OK') {
+        document.getElementById(response.teamId).innerHTML = response.score
+        notif.className = "";
+        notif.className = "alert alert-success";
+        $("#notification").fadeIn()
+        $("#notification").html('<b>GAME ENDED ON '+new Date(response.endTime).toLocaleString()+'!</b> Snitch was caught by '+response.player+'.')
+      } else {
+        notif.className = "";
+        notif.className = "alert alert-danger";
+        $("#notification").fadeIn()
+        $("#notification").html('<b>Warning!</b> '+response.message+'.')
+        $("#notification").delay(2000).slideUp()
+      }
+    }
+  })
+}
+
+function snitchAppeared() {
+  $.ajax({
+    url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/snitch/appeared/123",
+    type: "POST",
+    contentType:"application/json; charset=utf-8",
+    dataType:"json",
+    success: function(response){
+      var notif = document.getElementById('notification')
+      if (response.status === 'OK') {
+        notif.className = "";
+        notif.className = "alert alert-info";
+        $("#notification").fadeIn()
+        $("#notification").html('<b>Snitch has appeared</b> on <br /> '+new Date(response.appearanceDate).toLocaleString()+'')
+        $("#notification").delay(2000).slideUp()
+      } else {
+        notif.className = "";
+        notif.className = "alert alert-danger";
+        $("#notification").fadeIn()
+        $("#notification").html('<b>Warning!</b> '+response.message+'.')
+        $("#notification").delay(2000).slideUp()
+      }
+    }
+  })
+}
+
+function select(button, player) {
+  if (currentButton !== undefined) {
+    currentButton.className = "";
+    currentButton.className = "btn btn-default";
   }
-  </script>
+  currentPlayer = player
+  currentButton = button
+  button.className = "";
+  button.className = "btn btn-primary";
+}
+</script>
 {% endblock %}
 
 {% block body %}
@@ -156,82 +156,88 @@
 {% set firstRun = true %}
 
 {% for team in teams %}
-  <div class="col-md-4 text-center jumbotron">
+<div class="col-md-4 text-center jumbotron">
 
-    <div class="well">
-      <h3 class="bg-primary">{{ team.name }}</h3>
-    </div>
-
-    <div class="well">
-      <h1 id="{{ team._id.toString() }}">{{ team.score }}</h1>
-    </div>
-    <div class="panel panel-success">
-      <div class="panel-heading">Chasers</div>
-      <div class="panel-body">
-        {% for player in team.players %}
-          {% if player.position == 'Chaser' %}
-            <button type="button" class="btn btn-default" onclick="select(this, '{{ player._id.toString() }}')"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
-          {% endif %}
-        {% endfor %}
-      </div>
-    </div>
-    <br>
-    <div class="panel panel-success">
-      <div class="panel-heading">Keeper</div>
-      <div class="panel-body">
-        {% for player in team.players %}
-          {% if player.position == 'Keeper' %}
-            <button type="button" class="btn btn-default" onclick="select(this, '{{ player._id.toString() }}')"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
-          {% endif %}
-        {% endfor %}
-      </div>
-    </div>
-    <br>
-    <div class="panel panel-success">
-      <div class="panel-heading">Seeker</div>
-      <div class="panel-body">
-        {% for player in team.players %}
-          {% if player.position == 'Seeker' %}
-            <button type="button" class="btn btn-default" onclick="select(this, '{{ player._id.toString() }}')"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
-          {% endif %}
-        {% endfor %}
-      </div>
-    </div>
-    <br>
+  <div class="well">
+    <h3 class="bg-primary">{{ team.name }}</h3>
   </div>
 
-  {% if firstRun == true %}
-    <div class="col-md-4 text-center well">
-
-        <div id="notification" class="alert alert-danger" hidden="true"></div>
-
-        {% if snitch.caughtOn !== undefined %}
-          <div class="alert alert-success">
-            <p>
-              <b>GAME ENDED ON {{ snitch.caughtOn.toLocaleString() }}!</b> Snitch was caught by {{ snitch.caughtBy.name }}.
-            </p>
-          </div>
-        {% endif %}
-
-        <button type="button" class="btn btn-default" onclick="goal()">Goal Made</button>
-        <button type="button" class="btn btn-default" onclick="miss()">Goal Missed</button>
-        <br>
-        <button type="button" class="btn btn-default" onclick="block()">Goal Blocked</button>
-        <br>
-        <button type="button" class="btn btn-default" onclick="snitchAppeared()">Snitch Appeared</button>
-        <button type="button" class="btn btn-danger" onclick="end()">Snitch Caught</button>
-        <br>
-        <br>
+  <div class="well">
+    <h1 id="{{ team._id.toString() }}">{{ team.score }}</h1>
+  </div>
+  <div class="panel panel-success">
+    <div class="panel-heading">Chasers</div>
+    <div class="panel-body">
+      {% for player in team.players %}
+      {% if player.position == 'Chaser' %}
+      <button type="button" class="btn btn-default" onclick="select(this, '{{ player._id.toString() }}')"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
+      {% endif %}
+      {% endfor %}
     </div>
-  {% endif %}
+  </div>
+  <br>
+  <div class="panel panel-success">
+    <div class="panel-heading">Keeper</div>
+    <div class="panel-body">
+      {% for player in team.players %}
+      {% if player.position == 'Keeper' %}
+      <button type="button" class="btn btn-default" onclick="select(this, '{{ player._id.toString() }}')"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <br>
+  <div class="panel panel-success">
+    <div class="panel-heading">Seeker</div>
+    <div class="panel-body">
+      {% for player in team.players %}
+      {% if player.position == 'Seeker' %}
+      <button type="button" class="btn btn-default" onclick="select(this, '{{ player._id.toString() }}')"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <br>
+</div>
 
-  {% set firstRun = false %}
+{% if firstRun == true %}
+<div class="col-md-4 text-center">
+  <div class="well">
+    <div id="notification" class="alert alert-danger" hidden="true"></div>
+
+    {% if snitch.caughtOn !== undefined %}
+    <div class="alert alert-success">
+      <p>
+        <b>GAME ENDED ON {{ snitch.caughtOn.toLocaleString() }}!</b> Snitch was caught by {{ snitch.caughtBy.name }}.
+      </p>
+    </div>
+    {% endif %}
+
+    <button type="button" class="btn btn-default" onclick="goal()">Goal Made</button>
+    <button type="button" class="btn btn-default" onclick="miss()">Goal Missed</button>
+    <br>
+    <button type="button" class="btn btn-default" onclick="block()">Goal Blocked</button>
+    <br>
+    <button type="button" class="btn btn-default" onclick="snitchAppeared()">Snitch Appeared</button>
+    <button type="button" class="btn btn-danger" onclick="end()">Snitch Caught</button>
+    <br>
+    <br>
+  </div>
+  <div class="list-group">
+    <a class="list-group-item" href="/game/{{ gameId }}/box-score">BOX SCORE STATS</a>
+    <br>
+    <a class="list-group-item" href="/game/{{ gameId }}/play-by-play">PLAY BY PLAY</a>
+  </div>
+</div>
+{% endif %}
+
+{% set firstRun = false %}
 {% endfor %}
 
 {% if teams.length === 0 %}
-  <div class="col-md-12 text-center">
-    <h1>No data initialized</h1>
-  </div>
+<div class="col-md-12 text-center">
+  <h1>No data initialized</h1>
+</div>
 {% endif %}
 
 {% endblock %}

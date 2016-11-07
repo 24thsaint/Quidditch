@@ -1,3 +1,4 @@
+import http from 'http'
 import express from 'express'
 import fs from 'fs'
 import mongoose from 'mongoose'
@@ -7,7 +8,6 @@ import Team from '../dist/models/Team'
 import Player from '../dist/models/Player'
 import Snitch from '../dist/models/Snitch'
 import Game from '../dist/models/Game'
-import http from 'http'
 
 const WebSocketServer = require('ws').Server
 
