@@ -91,7 +91,7 @@ app.get('/game/:gameId', (request, response) => {
 
 // ================ REST stuff
 
-app.get('/games/all', (request, response) => {
+app.get('/games/list', (request, response) => {
   Game.find({}).exec()
     .then((games) => {
       response.writeHead(200, { 'Content-Type': 'application/json' })
