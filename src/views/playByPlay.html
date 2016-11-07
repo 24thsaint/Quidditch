@@ -4,7 +4,7 @@
 {% block scripts %}
   <script type="text/javascript">
 
-  var ws = new WebSocket("ws://localhost:1234/");
+  var ws = new WebSocket("ws://"+window.location.host+"/");
 
   ws.onmessage = function (evt)
   {
