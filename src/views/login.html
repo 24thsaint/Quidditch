@@ -16,7 +16,9 @@
     <h1>Open games</h1>
     <ul>
       {% for game in games %}
-        <li><a href="/game/{{ game._id.toString() }}">{{ game._id.toString() }}</a></li>
+        <li><a href="/game/{{ game._id.toString() }}">
+            {{ game.teams[0].name }} <b>vs</b> {{ game.teams[1].name }}          
+        </a></li>
       {% endfor %}
     </ul>
   </div>

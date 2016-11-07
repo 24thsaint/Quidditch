@@ -27,7 +27,7 @@ const tokens = ['123']
 // =============== VIEWS
 
 app.get('/', (request, response) => {
-  Game.find({}).exec()
+  Game.find({}).populate('teams').exec()
     .then((games) => {
       response.render('login.html', { games })
     })
