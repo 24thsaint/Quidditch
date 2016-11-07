@@ -19,6 +19,7 @@ app.set('view engine', 'html')
 app.set('views', './src/views')
 app.use(bodyParser.json())
 mongoose.Promise = Promise
+app.use(express.static('public'))
 
 // =============== TOKENS
 
