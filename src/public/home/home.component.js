@@ -3,7 +3,7 @@ angular
   .component('home', {
     templateUrl: '/templates/home-template.html',
     controller: ['$routeParams', '$http', '$scope',
-      function PhoneDetailController($routeParams, $http, $scope) {
+      function HomeController($routeParams, $http, $scope) {
         $http.get('/games/list')
           .success((data) => {
             $scope.games = data
