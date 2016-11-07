@@ -2,26 +2,7 @@
 {% block title %}Score Board{% endblock %}
 
 {% block scripts %}
-  <script type="text/javascript">
-  var host = ""
-
-  if (location.protocol === 'http:') {
-    host = "ws:"
-  } else {
-    host = "wss:"
-  }
-
-  var ws = new WebSocket(host+"//"+window.location.host+"/");
-
-  ws.onmessage = function (evt)
-  {
-    var data = JSON.parse(evt.data);
-    if (data.type === 'BOX-SCORE') {
-      document.getElementById(data.teamId).innerHTML = data.score
-    }
-  };
-
-  </script>
+  <script src="/js/box-score-client.js" charset="utf-8"></script>
 {% endblock %}
 
 {% block body %}
