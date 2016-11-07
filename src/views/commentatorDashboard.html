@@ -8,7 +8,7 @@
 
   function goal() {
     $.ajax({
-      url: "http://"+ window.location.host +"/game/"+ $("#gameId").val() +"/chaser/goal/123",
+      url: location.protocol +"//"+ window.location.host +"/game/"+ $("#gameId").val() +"/chaser/goal/123",
       type: "POST",
       data: JSON.stringify({ chaser: currentPlayer }),
       contentType:"application/json; charset=utf-8",
@@ -35,7 +35,7 @@
 
   function miss() {
     $.ajax({
-      url: "http://"+ window.location.host +"/game/" + $("#gameId").val() + "/chaser/miss/123",
+      url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/chaser/miss/123",
       type: "POST",
       data: JSON.stringify({ chaser: currentPlayer }),
       contentType:"application/json; charset=utf-8",
@@ -61,7 +61,7 @@
 
   function block() {
     $.ajax({
-      url: "http://"+ window.location.host +"/game/" + $("#gameId").val() + "/keeper/block/123",
+      url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/keeper/block/123",
       type: "POST",
       data: JSON.stringify({ keeper: currentPlayer }),
       contentType:"application/json; charset=utf-8",
@@ -87,7 +87,7 @@
 
   function end() {
     $.ajax({
-      url: "http://"+ window.location.host +"/game/" + $("#gameId").val() + "/seeker/catchSnitch/123",
+      url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/seeker/catchSnitch/123",
       type: "POST",
       data: JSON.stringify({ seeker: currentPlayer }),
       contentType:"application/json; charset=utf-8",
@@ -113,7 +113,7 @@
 
   function snitchAppeared() {
     $.ajax({
-      url: "http://"+ window.location.host +"/game/" + $("#gameId").val() + "/snitch/appeared/123",
+      url: location.protocol +"//"+ window.location.host +"/game/" + $("#gameId").val() + "/snitch/appeared/123",
       type: "POST",
       contentType:"application/json; charset=utf-8",
       dataType:"json",
