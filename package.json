@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "engines": {
+    "node": "6.9.1"
+  },
   "scripts": {
     "test": "mocha --compilers js:babel-core/register ./src/tests/*.test.js",
     "test:ci": "NODE_ENV=ci mocha --compilers js:babel-core/register ./src/integration-tests/*.test.js",
