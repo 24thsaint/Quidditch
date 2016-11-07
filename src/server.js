@@ -7,13 +7,13 @@ import Team from '../dist/models/Team'
 import Player from '../dist/models/Player'
 import Snitch from '../dist/models/Snitch'
 import Game from '../dist/models/Game'
+import http from 'http'
 
 const WebSocketServer = require('ws').Server
 
-const boxScoreWebSocket = new WebSocketServer({ host: 'localhost', port: '1235', path: '/socket/box-score' })
-const playByPlayWebSocket = new WebSocketServer({ host: 'localhost', port: '1236', path: '/socket/play-by-play' })
-
+const server = http.createServer()
 const app = express()
+const socket = new WebSocketServer({ server })
 app.engine('html', consolidate.swig)
 app.set('view engine', 'html')
 app.set('views', './src/views')
@@ -161,10 +161,11 @@ app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
         Game.findOne({ _id: gameId }).exec()
           .then((game) => {
             const jsonResponse = game.goalMade(player)
+            jsonResponse.type = 'PLAY-BY-PLAY'
             game.save()
             player.save()
 
-            playByPlayWebSocket.clients.forEach((client) => {
+            socket.clients.forEach((client) => {
               client.send(JSON.stringify(jsonResponse))
             })
           })
@@ -177,9 +178,10 @@ app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
                 team: team.name,
                 teamId: team._id, // eslint-disable-line
                 score: team.score,
+                type: 'BOX-SCORE',
               })
 
-              boxScoreWebSocket.clients.forEach((client) => {
+              socket.clients.forEach((client) => {
                 client.send(jsonResponse)
               })
 
@@ -216,10 +218,11 @@ app.post('/game/:gameId/chaser/miss/:token', (request, response) => {
         Game.findOne({ _id: gameId }).exec()
           .then((game) => {
             const socketResponse = game.goalMissed(player)
+            socketResponse.type = 'PLAY-BY-PLAY'
             game.save()
             player.save()
 
-            playByPlayWebSocket.clients.forEach((client) => {
+            socket.clients.forEach((client) => {
               client.send(JSON.stringify(socketResponse))
             })
 
@@ -260,10 +263,11 @@ app.post('/game/:gameId/keeper/block/:token', (request, response) => {
         Game.findOne({ _id: gameId }).exec()
           .then((game) => {
             const socketResponse = game.goalBlocked(player)
+            socketResponse.type = 'PLAY-BY-PLAY'
             game.save()
             player.save()
 
-            playByPlayWebSocket.clients.forEach((client) => {
+            socket.clients.forEach((client) => {
               client.send(JSON.stringify(socketResponse))
             })
 
@@ -299,6 +303,7 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
       Player.findOne({ _id: jsonRequest.seeker }).exec()
       .then((seeker) => {
         const socketResponse = game.snitchCaught(seeker)
+        socketResponse.type = 'PLAY-BY-PLAY'
 
         game.snitch.save()
           .then(() => {
@@ -307,7 +312,7 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
           .then(() => {
             game.save()
 
-            playByPlayWebSocket.clients.forEach((client) => {
+            socket.clients.forEach((client) => {
               client.send(JSON.stringify(socketResponse))
             })
 
@@ -328,9 +333,10 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
                   team: team.name,
                   teamId: team._id, // eslint-disable-line
                   score: team.score,
+                  type: 'BOX-SCORE',
                 })
 
-                boxScoreWebSocket.clients.forEach((client) => {
+                socket.clients.forEach((client) => {
                   client.send(scoreSocketResponse)
                 })
 
@@ -359,11 +365,12 @@ app.post('/game/:gameId/snitch/appeared/:token', (request, response) => {
     Game.findOne({ _id: gameId }).populate('snitch').exec()
     .then((game) => {
       const socketResponse = game.snitchAppeared()
+      socketResponse.type = 'PLAY-BY-PLAY'
       game.snitch.save()
           .then(() => {
             game.save()
 
-            playByPlayWebSocket.clients.forEach((client) => {
+            socket.clients.forEach((client) => {
               client.send(JSON.stringify(socketResponse))
             })
 
@@ -448,5 +455,6 @@ app.get('/css/bootstrap.min.css', (request, response) => {
 })
 // ================
 
-app.listen(process.env.PORT || 1234)
+server.on('request', app)
+server.listen(process.env.PORT || 1234)
 console.log('Server running over port 1234')

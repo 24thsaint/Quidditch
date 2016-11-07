@@ -4,13 +4,14 @@
 {% block scripts %}
   <script type="text/javascript">
 
-  var ws = new WebSocket("ws://localhost:1236/socket/play-by-play");
+  var ws = new WebSocket("ws://localhost:1234/");
 
   ws.onmessage = function (evt)
   {
     var play = JSON.parse(evt.data);
-    console.log(play)
-    $('#plays > tbody:last-child').append('<tr><td>'+ new Date(play.time).toLocaleString() +' - '+ play.message +'</td></tr>')
+    if (play.type === 'PLAY-BY-PLAY') {
+      $('#plays > tbody:last-child').append('<tr><td>'+ new Date(play.time).toLocaleString() +' - '+ play.message +'</td></tr>')
+    }
   };
 
   </script>

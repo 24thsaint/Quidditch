@@ -4,12 +4,14 @@
 {% block scripts %}
   <script type="text/javascript">
 
-  var ws = new WebSocket("ws://localhost:1235/socket/box-score");
- 
+  var ws = new WebSocket("ws://localhost:1234/");
+
   ws.onmessage = function (evt)
   {
     var data = JSON.parse(evt.data);
-    document.getElementById(data.teamId).innerHTML = data.score
+    if (data.type === 'BOX-SCORE') {
+      document.getElementById(data.teamId).innerHTML = data.score
+    }
   };
 
   </script>
