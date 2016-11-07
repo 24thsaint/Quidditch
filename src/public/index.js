@@ -1,0 +1,6 @@
+import angular from 'angular'
+import 'angular-route'
+import './app.module.js'
+import './app.config.js'
+import './home/home.module.js'
+import './home/home.component.js'

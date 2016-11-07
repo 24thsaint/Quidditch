@@ -27,12 +27,12 @@ const tokens = ['123']
 
 // =============== VIEWS
 
-app.get('/', (request, response) => {
-  Game.find({}).populate('teams').exec()
-    .then((games) => {
-      response.render('login.html', { games })
-    })
-})
+// app.get('/', (request, response) => {
+//   Game.find({}).populate('teams').exec()
+//     .then((games) => {
+//       response.render('login.html', { games })
+//     })
+// })
 
 app.get('/game/:gameId/box-score', (request, response) => {
   const id = request.params.gameId
@@ -93,7 +93,7 @@ app.get('/game/:gameId', (request, response) => {
 // ================ REST stuff
 
 app.get('/games/list', (request, response) => {
-  Game.find({}).exec()
+  Game.find({}).populate('teams snitch').exec()
     .then((games) => {
       response.writeHead(200, { 'Content-Type': 'application/json' })
       response.end(JSON.stringify(games, null, 2))
@@ -427,7 +427,7 @@ app.get('/js/jquery.min.js', (request, response) => {
     if (err) {
       response.send(err)
     } else {
-      response.writeHead(200, 'text/javascript')
+      response.writeHead(200, { 'Content-Type': 'text/javascript' })
       response.end(data)
     }
   })
@@ -438,7 +438,7 @@ app.get('/js/bootstrap.min.js', (request, response) => {
     if (err) {
       response.send(err)
     } else {
-      response.writeHead(200, 'text/javascript')
+      response.writeHead(200, { 'Content-Type': 'text/javascript' })
       response.end(data)
     }
   })
@@ -449,13 +449,19 @@ app.get('/css/bootstrap.min.css', (request, response) => {
     if (err) {
       response.send(err)
     } else {
-      response.writeHead(200, 'text/css')
+      response.writeHead(200, { 'Content-Type': 'text/css' })
       response.end(data)
     }
   })
 })
-// ================
 
+// ================ ANGULAR STUFF
+
+app.get('*', (request, response) => {
+  response.sendFile('index.html', { root: `${__dirname}/../src/views` })
+})
+
+// ================
 server.on('request', app)
 server.listen(process.env.PORT || 1234)
 console.log('Server running over port 1234')
