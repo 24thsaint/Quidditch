@@ -2,26 +2,7 @@
 {% block title %}Play By Play{% endblock %}
 
 {% block scripts %}
-  <script type="text/javascript">
-  var host = ""
-
-  if (location.protocol === 'http:') {
-    host = "ws:"
-  } else {
-    host = "wss:"
-  }
-
-  var ws = new WebSocket(host+"//"+window.location.host+"/");
-
-  ws.onmessage = function (evt)
-  {
-    var play = JSON.parse(evt.data);
-    if (play.type === 'PLAY-BY-PLAY') {
-      $('#plays > tbody:last-child').append('<tr><td>'+ new Date(play.time).toLocaleString() +' - '+ play.message +'</td></tr>')
-    }
-  };
-
-  </script>
+  <script src="/js/play-by-play-client.js" charset="utf-8"></script>
 {% endblock %}
 
 {% block body %}
