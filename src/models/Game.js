@@ -6,7 +6,8 @@ const schema = mongoose.Schema({  // eslint-disable-line
   snitch: { type: mongoose.Schema.Types.ObjectId, ref: 'Snitch' },
   playHistory: [{
     time: Date,
-    message: String,
+    eventType: String,
+    player: { type: mongoose.Schema.Types.ObjectId, ref: 'Player' },
   }],
   startTime: { type: Date },
   endTime: { type: Date },
@@ -27,7 +28,8 @@ class Game extends Model {
     this.endTime = time
     const message = {
       time,
-      message: `Snitch caught by ${seeker.name}. GAME HAS ENDED.`,
+      eventType: 'end',
+      player: seeker,
     }
     this.playHistory.push(message)
     return message
@@ -37,7 +39,7 @@ class Game extends Model {
     this.startTime = time
     const message = {
       time: new Date(),
-      message: `Game started on ${time}`,
+      eventType: 'start',
     }
     this.playHistory.push(message)
     return message
@@ -50,7 +52,8 @@ class Game extends Model {
     chaser.scoreGoal()
     const message = {
       time: new Date(),
-      message: `Goal made by ${chaser.name}`,
+      eventType: 'goal',
+      player: chaser,
     }
     this.playHistory.push(message)
     return message
@@ -63,7 +66,8 @@ class Game extends Model {
     chaser.missGoal()
     const message = {
       time: new Date(),
-      message: `Goal missed by ${chaser.name}`,
+      eventType: 'miss',
+      player: chaser,
     }
     this.playHistory.push(message)
     return message
@@ -76,7 +80,8 @@ class Game extends Model {
     keeper.block()
     const message = {
       time: new Date(),
-      message: `Goal blocked by ${keeper.name}`,
+      eventType: 'block',
+      player: keeper,
     }
     this.playHistory.push(message)
     return message
@@ -90,7 +95,7 @@ class Game extends Model {
     this.snitch.appeared(appearanceDate)
     const message = {
       time: appearanceDate,
-      message: 'Snitch has appeared',
+      eventType: 'snitchAppears',
     }
     this.playHistory.push(message)
     return message
