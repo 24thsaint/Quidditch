@@ -1,8 +1,10 @@
+/* global angular */
+
 angular
   .module('app')
   .config(['$locationProvider', '$routeProvider',
     function config($locationProvider, $routeProvider) {
-      $locationProvider.hashPrefix('')
+      $locationProvider.html5Mode(true)
 
       $routeProvider
         .when('/', {
@@ -10,6 +12,9 @@ angular
         })
         .when('/game/:gameId', {
           template: '<commentator></commentator>',
+        })
+        .when('/game/:gameId/box-score', {
+          template: '<box></box>',
         })
         .otherwise('/')
     },
