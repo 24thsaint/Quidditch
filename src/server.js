@@ -54,8 +54,12 @@ app.get('/game/:gameId/box-score', (request, response) => {
 
 app.get('/game/:gameId/play-by-play', (request, response) => {
   const id = request.params.gameId
-  Game.findOne({ _id: id }).exec()
+  Game.findOne({ _id: id }).populate({
+    path: 'playHistory.player',
+    model: 'Player',
+  }).exec()
     .then((game) => {
+      console.log(game)
       response.render('playByPlay.html', { playHistory: game.playHistory })
     })
 })

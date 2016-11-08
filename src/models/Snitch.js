@@ -1,7 +1,7 @@
-import Model from './Model'
 import mongoose from 'mongoose'
+import Model from './Model'
 
-const schema = mongoose.Schema({
+const schema = mongoose.Schema({ // eslint-disable-line
   appearedOn: { type: Date },
   caughtOn: { type: Date },
   caughtBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Player' },

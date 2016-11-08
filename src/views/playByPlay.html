@@ -15,7 +15,20 @@
         {% for play in playHistory %}
           <tr>
             <td>
-              {{ play.time.toLocaleString() }} - {{ play.message }}
+              {{ play.time.toLocaleString() }} -
+              {% if play.eventType === 'end' %}
+                Snitch caught by {{ play.player.name }}. GAME HAS ENDED.
+              {% elseif play.eventType === 'start' %}
+                Game started
+              {% elseif play.eventType === 'goal' %}
+                Goal made by {{ play.player.name }}
+              {% elseif play.eventType === 'miss' %}
+                Goal missed by {{ play.player.name }}
+              {% elseif play.eventType === 'block' %}
+                Goal blocked by play.player.name
+              {% elseif play.eventType === 'snitchAppears' %}
+                Snitch has appeared
+              {% endif %}
             </td>
           </tr>
         {% endfor %}

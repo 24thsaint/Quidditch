@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import Model from './Model'
 
-const schema = mongoose.Schema({
+const schema = mongoose.Schema({ // eslint-disable-line
   name: { type: String },
   players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }],
 })

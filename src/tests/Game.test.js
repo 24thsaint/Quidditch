@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+
 import chai from 'chai' // eslint-disable-line
 import faker from 'faker'
 import Snitch from '../models/Snitch'
@@ -114,6 +115,15 @@ beforeEach(() => {
 describe('Game', () => {
   beforeEach(() => {
     reinitialize()
+  })
+
+  it('initialization', () => {
+    game = new Game()
+    expect(game.teams.length).to.equal(0)
+    expect(game.playHistory.length).to.equal(0)
+    expect(game.startTime).to.be.undefined // eslint-disable-line
+    expect(game.endTime).to.be.undefined // eslint-disable-line
+    expect(game.snitch).to.be.undefined // eslint-disable-line
   })
 
   describe('#goalMade()', () => {
