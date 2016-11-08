@@ -38,18 +38,18 @@ app.get('/game/:gameId/box-score', (request, response) => {
       model: 'Player',
     },
   }).exec()
-    .then((game) => {
-      const tallies = []
-      for (const team of game.teams) {
-        const temp = {
-          teamId: team._id, //eslint-disable-line
-          teamName: team.name,
-          score: team.score,
-        }
-        tallies.push(temp)
+  .then((game) => {
+    const tallies = []
+    for (const team of game.teams) {
+      const temp = {
+        teamId: team._id, //eslint-disable-line
+        teamName: team.name,
+        score: team.score,
       }
-      response.render('boxScore.html', { tallies })
-    })
+      tallies.push(temp)
+    }
+    response.render('boxScore.html', { tallies })
+  })
 })
 
 app.get('/game/:gameId/play-by-play', (request, response) => {
@@ -58,20 +58,20 @@ app.get('/game/:gameId/play-by-play', (request, response) => {
     path: 'playHistory.player',
     model: 'Player',
   }).exec()
-    .then((game) => {
-      console.log(game)
-      response.render('playByPlay.html', { playHistory: game.playHistory })
-    })
+  .then((game) => {
+    console.log(game)
+    response.render('playByPlay.html', { playHistory: game.playHistory })
+  })
 })
 
 // ================ REST stuff
 
 app.get('/games/list', (request, response) => {
   Game.find({}).populate('teams snitch').exec()
-    .then((games) => {
-      response.writeHead(200, { 'Content-Type': 'application/json' })
-      response.end(JSON.stringify(games, null, 2))
-    })
+  .then((games) => {
+    response.writeHead(200, { 'Content-Type': 'application/json' })
+    response.end(JSON.stringify(games, null, 2))
+  })
 })
 
 app.get('/game/find/:gameId', (request, response) => {
@@ -92,10 +92,10 @@ app.get('/game/find/:gameId', (request, response) => {
       model: 'Player',
     },
   }).exec()
-      .then((game) => {
-        response.writeHead(200, { 'Content-Type': 'application/json' })
-        response.end(JSON.stringify(game, null, 2))
-      })
+  .then((game) => {
+    response.writeHead(200, { 'Content-Type': 'application/json' })
+    response.end(JSON.stringify(game, null, 2))
+  })
 })
 
 app.get('/game/:gameId/team/all', (request, response) => {
@@ -109,18 +109,18 @@ app.get('/game/:gameId/team/all', (request, response) => {
       model: 'Player',
     },
   }).exec()
-    .then((game) => {
-      response.writeHead(200, { 'Content-Type': 'application/json' })
-      const res = []
-      for (const team of game.teams) {
-        const json = {
-          team,
-          score: team.score,
-        }
-        res.push(json)
+  .then((game) => {
+    response.writeHead(200, { 'Content-Type': 'application/json' })
+    const res = []
+    for (const team of game.teams) {
+      const json = {
+        team,
+        score: team.score,
       }
-      response.end(JSON.stringify(res, null, 2))
-    })
+      res.push(json)
+    }
+    response.end(JSON.stringify(res, null, 2))
+  })
 })
 
 app.get('/team/:id', (request, response) => {
@@ -156,44 +156,44 @@ app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
     }
 
     Player.findOne({ _id: jsonRequest.chaser }).populate('team').exec()
-      .then((player) => {
-        Game.findOne({ _id: gameId }).exec()
-          .then((game) => {
-            const jsonResponse = game.goalMade(player)
-            jsonResponse.type = 'PLAY-BY-PLAY'
-            game.save()
-            player.save()
+    .then((player) => {
+      Game.findOne({ _id: gameId }).exec()
+      .then((game) => {
+        const jsonResponse = game.goalMade(player)
+        jsonResponse.type = 'PLAY-BY-PLAY'
+        game.save()
+        player.save()
 
-            socket.clients.forEach((client) => {
-              client.send(JSON.stringify(jsonResponse))
-            })
+        socket.clients.forEach((client) => {
+          client.send(JSON.stringify(jsonResponse))
+        })
+      })
+      .then(() => {
+        Team.findOne({ _id: player.team._id }).populate('players').exec() // eslint-disable-line
+        .then((team) => {
+          const jsonResponse = JSON.stringify({
+            status: 'OK',
+            player: player.name,
+            team: team.name,
+            teamId: team._id, // eslint-disable-line
+            score: team.score,
+            type: 'BOX-SCORE',
           })
-          .then(() => {
-            Team.findOne({ _id: player.team._id }).populate('players').exec() // eslint-disable-line
-            .then((team) => {
-              const jsonResponse = JSON.stringify({
-                status: 'OK',
-                player: player.name,
-                team: team.name,
-                teamId: team._id, // eslint-disable-line
-                score: team.score,
-                type: 'BOX-SCORE',
-              })
 
-              socket.clients.forEach((client) => {
-                client.send(jsonResponse)
-              })
+          socket.clients.forEach((client) => {
+            client.send(jsonResponse)
+          })
 
-              response.end(jsonResponse)
-            })
-          })
-          .catch((err) => {
-            response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
-          })
+          response.end(jsonResponse)
+        })
       })
       .catch((err) => {
         response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
       })
+    })
+    .catch((err) => {
+      response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
+    })
   } else {
     response.writeHead(401, { 'Content-Type': 'application/json' })
     response.end(JSON.stringify({ status: 'FAIL', message: 'Unauthorized' }))
@@ -213,32 +213,32 @@ app.post('/game/:gameId/chaser/miss/:token', (request, response) => {
     }
 
     Player.findOne({ _id: jsonRequest.chaser }).exec()
-      .then((player) => {
-        Game.findOne({ _id: gameId }).exec()
-          .then((game) => {
-            const socketResponse = game.goalMissed(player)
-            socketResponse.type = 'PLAY-BY-PLAY'
-            game.save()
-            player.save()
+    .then((player) => {
+      Game.findOne({ _id: gameId }).exec()
+      .then((game) => {
+        const socketResponse = game.goalMissed(player)
+        socketResponse.type = 'PLAY-BY-PLAY'
+        game.save()
+        player.save()
 
-            socket.clients.forEach((client) => {
-              client.send(JSON.stringify(socketResponse))
-            })
+        socket.clients.forEach((client) => {
+          client.send(JSON.stringify(socketResponse))
+        })
 
-            const jsonResponse = JSON.stringify({
-              status: 'OK',
-              player: player.name,
-            })
+        const jsonResponse = JSON.stringify({
+          status: 'OK',
+          player: player.name,
+        })
 
-            response.end(jsonResponse)
-          })
-          .catch((err) => {
-            response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
-          })
+        response.end(jsonResponse)
       })
       .catch((err) => {
         response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
       })
+    })
+    .catch((err) => {
+      response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
+    })
   } else {
     response.writeHead(401, { 'Content-Type': 'application/json' })
     response.end(JSON.stringify({ status: 'FAIL', message: 'Unauthorized' }))
@@ -258,29 +258,32 @@ app.post('/game/:gameId/keeper/block/:token', (request, response) => {
     }
 
     Player.findOne({ _id: jsonRequest.keeper }).exec()
-      .then((player) => {
-        Game.findOne({ _id: gameId }).exec()
-          .then((game) => {
-            const socketResponse = game.goalBlocked(player)
-            socketResponse.type = 'PLAY-BY-PLAY'
-            game.save()
-            player.save()
+    .then((player) => {
+      Game.findOne({ _id: gameId }).exec()
+      .then((game) => {
+        const socketResponse = game.goalBlocked(player)
+        socketResponse.type = 'PLAY-BY-PLAY'
+        game.save()
+        player.save()
 
-            socket.clients.forEach((client) => {
-              client.send(JSON.stringify(socketResponse))
-            })
+        socket.clients.forEach((client) => {
+          client.send(JSON.stringify(socketResponse))
+        })
 
-            const jsonResponse = JSON.stringify({
-              status: 'OK',
-              player: player.name,
-            })
+        const jsonResponse = JSON.stringify({
+          status: 'OK',
+          player: player.name,
+        })
 
-            response.end(jsonResponse)
-          })
+        response.end(jsonResponse)
       })
       .catch((err) => {
         response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
       })
+    })
+    .catch((err) => {
+      response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
+    })
   } else {
     response.writeHead(401, { 'Content-Type': 'application/json' })
     response.end(JSON.stringify({ status: 'FAIL', message: 'Unauthorized' }))
@@ -305,43 +308,49 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
         socketResponse.type = 'PLAY-BY-PLAY'
 
         game.snitch.save()
-          .then(() => {
-            seeker.save()
-          })
-          .then(() => {
-            game.save()
+        .then(() => {
+          seeker.save()
+        })
+        .then(() => {
+          game.save()
 
-            socket.clients.forEach((client) => {
-              client.send(JSON.stringify(socketResponse))
+          socket.clients.forEach((client) => {
+            client.send(JSON.stringify(socketResponse))
+          })
+
+          Team.findOne({ _id: seeker.team }).populate('players').exec() // eslint-disable-line
+          .then((team) => {
+            console.log(team)
+            const jsonResponse = JSON.stringify({
+              status: 'OK',
+              player: seeker.name,
+              endTime: game.endTime,
+              score: team.score,
+              teamId: team._id, // eslint-disable-line
             })
 
-            Team.findOne({ _id: seeker.team }).populate('players').exec() // eslint-disable-line
-              .then((team) => {
-                console.log(team)
-                const jsonResponse = JSON.stringify({
-                  status: 'OK',
-                  player: seeker.name,
-                  endTime: game.endTime,
-                  score: team.score,
-                  teamId: team._id, // eslint-disable-line
-                })
+            const scoreSocketResponse = JSON.stringify({
+              status: 'OK',
+              player: seeker.name,
+              team: team.name,
+              teamId: team._id, // eslint-disable-line
+              score: team.score,
+              type: 'BOX-SCORE',
+            })
 
-                const scoreSocketResponse = JSON.stringify({
-                  status: 'OK',
-                  player: seeker.name,
-                  team: team.name,
-                  teamId: team._id, // eslint-disable-line
-                  score: team.score,
-                  type: 'BOX-SCORE',
-                })
+            socket.clients.forEach((client) => {
+              client.send(scoreSocketResponse)
+            })
 
-                socket.clients.forEach((client) => {
-                  client.send(scoreSocketResponse)
-                })
-
-                response.end(jsonResponse)
-              })
+            response.end(jsonResponse)
           })
+          .catch((err) => {
+            response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
+          })
+        })
+        .catch((err) => {
+          response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
+        })
       })
       .catch((err) => {
         response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
@@ -366,20 +375,20 @@ app.post('/game/:gameId/snitch/appeared/:token', (request, response) => {
       const socketResponse = game.snitchAppeared()
       socketResponse.type = 'PLAY-BY-PLAY'
       game.snitch.save()
-          .then(() => {
-            game.save()
+      .then(() => {
+        game.save()
 
-            socket.clients.forEach((client) => {
-              client.send(JSON.stringify(socketResponse))
-            })
+        socket.clients.forEach((client) => {
+          client.send(JSON.stringify(socketResponse))
+        })
 
-            const jsonResponse = JSON.stringify({
-              status: 'OK',
-              appearanceDate: game.snitch.appearedOn,
-            })
+        const jsonResponse = JSON.stringify({
+          status: 'OK',
+          appearanceDate: game.snitch.appearedOn,
+        })
 
-            response.end(jsonResponse)
-          })
+        response.end(jsonResponse)
+      })
     })
     .catch((err) => {
       response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
@@ -398,21 +407,21 @@ app.post('/game/start/:token', (request, response) => {
   if (tokens.includes(token)) {
     const snitch = new Snitch()
     snitch.save()
-      .then(() => {
-        const game = new Game({
-          teams: jsonRequest.teams,
-          snitch,
-          playHistory: [],
-        })
-        game.start()
-        game.save()
-          .then(() => {
-            response.redirect(`/game/${game._id}`) // eslint-disable-line
-          })
-          .catch((err) => {
-            response.end(JSON.stringify({ status: 'FAIL', message: err }))
-          })
+    .then(() => {
+      const game = new Game({
+        teams: jsonRequest.teams,
+        snitch,
+        playHistory: [],
       })
+      game.start()
+      game.save()
+      .then(() => {
+        response.redirect(`/game/${game._id}`) // eslint-disable-line
+      })
+      .catch((err) => {
+        response.end(JSON.stringify({ status: 'FAIL', message: err }))
+      })
+    })
   } else {
     response.writeHead(401, { 'Content-Type': 'application/json' })
     response.end(JSON.stringify({ status: 'FAIL', message: 'Unauthorized' }))

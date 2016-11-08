@@ -8,14 +8,14 @@
   </div>
 
   <div class="well">
-    <h1 id="{{ team._id.toString() }}">{{ teamData.score }}</h1>
+    <h1 id="{{ teamData.team._id }}">{{ teamData.score }}</h1>
   </div>
   <div class="panel panel-success">
     <div class="panel-heading">Chasers</div>
     <div class="panel-body">
       <span ng-repeat="player in teamData.team.players">
         <span ng-if="player.position === 'Chaser'">
-          <button type="button" class="btn btn-default" ng-click="select(this, '{{ player._id.toString() }}')"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
+          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
         </span>
       </span>
     </div>
@@ -26,7 +26,7 @@
     <div class="panel-body">
       <span ng-repeat="player in teamData.team.players">
         <span ng-if="player.position === 'Keeper'">
-          <button type="button" class="btn btn-default" ng-click="select(this, '{{ player._id.toString() }}')"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
+          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
         </span>
       </span>
     </div>
@@ -37,7 +37,7 @@
     <div class="panel-body">
       <span ng-repeat="player in teamData.team.players">
         <span ng-if="player.position === 'Seeker'">
-          <button type="button" class="btn btn-default" ng-click="select(this, '{{ player._id.toString() }}')"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
+          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
         </span>
       </span>
     </div>
@@ -47,12 +47,12 @@
 
 <div class="col-md-4 text-center">
   <div class="well">
-    <div id="notification" class="alert alert-danger" hidden="true"></div>
+    <div id="notification" class="alert" hidden="true"></div>
 
-    <div ng-if="snitch.caughtOn !== undefined">
+    <div ng-if="game.snitch.caughtOn !== undefined">
       <div class="alert alert-success">
         <p>
-          <b>GAME ENDED ON {{ snitch.caughtOn.toLocaleString() }}!</b> Snitch was caught by {{ snitch.caughtBy.name }}.
+          <b>GAME ENDED ON {{ game.snitch.caughtOn }}!</b><br /> Snitch was caught by <b>{{ game.snitch.caughtBy.name }}</b>.
         </p>
       </div>
     </div>
