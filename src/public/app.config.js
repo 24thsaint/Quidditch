@@ -9,11 +9,8 @@ angular
           template: '<home></home>',
         })
         .when('/game/:gameId', {
-          template: '<game></game>',
+          template: '<commentator></commentator>',
         })
-        .when('/phones/:phoneId', {
-          template: '<phone-detail></phone-detail>',
-        })
-        .otherwise('/phones')
+        .otherwise('/')
     },
   ])

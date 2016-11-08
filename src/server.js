@@ -67,7 +67,42 @@ app.get('/game/:gameId/play-by-play', (request, response) => {
     })
 })
 
-app.get('/game/:gameId', (request, response) => {
+// app.get('/game/:gameId', (request, response) => {
+//   const id = request.params.gameId
+//
+//   Game.findOne({ _id: id }).populate({
+//     path: 'teams',
+//     model: 'Team',
+//     populate: {
+//       path: 'players',
+//       model: 'Player',
+//     },
+//   }).populate({
+//     path: 'snitch',
+//     model: 'Snitch',
+//     populate: {
+//       path: 'caughtBy',
+//       model: 'Player',
+//     },
+//   }).exec()
+//     .then((game) => {
+//       response.render(
+//          'commentatorDashboard.html',
+//          { teams: game.teams, gameId: id, snitch: game.snitch })
+//     })
+// })
+
+// ================ REST stuff
+
+app.get('/games/list', (request, response) => {
+  Game.find({}).populate('teams snitch').exec()
+    .then((games) => {
+      response.writeHead(200, { 'Content-Type': 'application/json' })
+      response.end(JSON.stringify(games, null, 2))
+    })
+})
+
+app.get('/game/find/:gameId', (request, response) => {
   const id = request.params.gameId
 
   Game.findOne({ _id: id }).populate({
@@ -85,19 +120,10 @@ app.get('/game/:gameId', (request, response) => {
       model: 'Player',
     },
   }).exec()
-    .then((game) => {
-      response.render('commentatorDashboard.html', { teams: game.teams, gameId: id, snitch: game.snitch })
-    })
-})
-
-// ================ REST stuff
-
-app.get('/games/list', (request, response) => {
-  Game.find({}).populate('teams snitch').exec()
-    .then((games) => {
-      response.writeHead(200, { 'Content-Type': 'application/json' })
-      response.end(JSON.stringify(games, null, 2))
-    })
+      .then((game) => {
+        response.writeHead(200, { 'Content-Type': 'application/json' })
+        response.end(JSON.stringify(game, null, 2))
+      })
 })
 
 app.get('/game/:gameId/team/all', (request, response) => {
