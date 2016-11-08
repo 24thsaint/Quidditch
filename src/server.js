@@ -452,7 +452,7 @@ app.get('/css/bootstrap.min.css', (request, response) => {
 // ================ ANGULAR STUFF
 
 app.get('*', (request, response) => {
-  response.sendFile('index.html', { root: `${__dirname}/../src/views` })
+  response.sendFile('index.html', { root: `${__dirname}/../public/templates/` })
 })
 
 // ================
