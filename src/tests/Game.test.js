@@ -144,52 +144,55 @@ describe('Game', () => {
       game.goalMade(c5)
       expect(blueTeam.score).to.equal(40)
     })
+
+    it('disallows a score if the scoring player is a keeper', () => {
+      expect(() => { game.goalMade(k1) }).to.throw(Error)
+      expect(k1.goals).to.equal(0)
+    })
+
+    it('disallows a score if the scoring player is a seeker', () => {
+      expect(() => { game.goalBlocked(s1) }).to.throw(Error)
+      expect(s1.goals).to.equal(0)
+    })
   })
 
-  describe('#goalBlocked', () => {
+  describe('#goalBlocked()', () => {
     it('indicate that an attempted goal has been blocked', () => {
       game.goalBlocked(k2)
       expect(k2.blocks).to.equal(1)
     })
+
+    it('disallows a block if the blocking player is a chaser', () => {
+      expect(() => { game.goalBlocked(c1) }).to.throw(Error)
+      expect(c1.blocks).to.equal(0)
+    })
+
+    it('disallows a block if the blocking player is a keeper', () => {
+      expect(() => { game.goalBlocked(s1) }).to.throw(Error)
+      expect(s1.blocks).to.equal(0)
+    })
   })
 
-  describe('#snitchCaught', () => {
+  describe('#snitchCaught()', () => {
     it('make blue team catch the snitch and end the game', () => {
       game.snitchAppeared()
       game.snitchCaught(s2)
       expect(blueTeam.score).to.equal(30)
       expect(game.endTime).to.not.be.undefined // eslint-disable-line
     })
-  })
-})
 
-describe('Snitch', () => {
-  beforeEach(() => {
-    reinitialize()
-  })
+    it('disallows a catch if the catching player is a chaser', () => {
+      game.snitchAppeared()
 
-  const snitch = new Snitch({})
-
-  it('indicate that the snitch has not yet appeared nor caught', () => {
-    expect(snitch.appearedOn).to.be.undefined // eslint-disable-line
-    expect(snitch.caughtOn).to.be.undefined   // eslint-disable-line
-  })
-
-  describe('#appeared', () => {
-    it('indicate that the snitch has appeared', () => {
-      snitch.appeared(new Date())
-      expect(snitch.appearedOn).to.not.be.undefined // eslint-disable-line
-      expect(snitch.caughtOn).to.be.undefined       // eslint-disable-line
+      expect(() => { game.snitchCaught(c1) }).to.throw(Error)
+      expect(c1.snitchCaught).to.be.false // eslint-disable-line
     })
-  })
 
-  describe('#caught', () => {
-    it('indicate that the snitch has been caught after 3 minutes', () => {
-      const snitchCaughtSimulatedTime = new Date(snitch.appearedOn)
-      snitchCaughtSimulatedTime.setMinutes(snitchCaughtSimulatedTime.getMinutes() + 3)
-      snitch.caught(snitchCaughtSimulatedTime, s1)
-      expect(snitch.caughtOn.getTime() - snitch.appearedOn.getTime()).to.equal(180000)
-      expect(snitch.caughtBy).to.equal(s1)
+    it('disallows a catch if the catching player is a keeper', () => {
+      game.snitchAppeared()
+
+      expect(() => { game.snitchCaught(k1) }).to.throw(Error)
+      expect(k1.snitchCaught).to.be.false // eslint-disable-line
     })
   })
 })
