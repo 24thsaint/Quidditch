@@ -23,7 +23,6 @@ class Team extends Model {
       }
     }
     score += goalsMade * 10
-    this.score = score
     return score
   }
 
