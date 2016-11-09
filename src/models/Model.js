@@ -22,6 +22,7 @@ class Model {
     Object.assign(this, properties)
   }
 
+  /* take note of the universalize method that uses static schema var */
   static load(name, modelClass, schema) {
     schema.plugin(loadClass, modelClass)
     return mongoose.model(name, schema)

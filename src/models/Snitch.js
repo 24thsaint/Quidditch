@@ -10,6 +10,7 @@ const schema = mongoose.Schema({ // eslint-disable-line
 class Snitch extends Model {
 
   appeared(time) {
+    // this.appearedOn = Date.now
     if (this.appearedOn !== undefined) {
       throw new Error('Snitch has already appeared')
     }

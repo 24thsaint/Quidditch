@@ -13,7 +13,8 @@
     "build": "./node_modules/.bin/babel src/ --out-dir dist/",
     "seed": "./node_modules/.bin/babel seed.js -o seed-dist.js && node seed-dist.js",
     "postinstall": "npm run build && npm run seed",
-    "start": "node dist/"
+    "start": "node dist/",
+    "lint": "eslint"
   },
   "author": "",
   "license": "ISC",

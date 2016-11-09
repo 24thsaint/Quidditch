@@ -15,6 +15,7 @@ class Team extends Model {
   get score() {
     let goalsMade = 0
     let score = 0
+    // use forEach, airBnb styleguide
     for (const player of this.players) {
       goalsMade += player.goals
       if (player.snitchCaught) {

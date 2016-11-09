@@ -3,7 +3,13 @@ import Model from './Model'
 
 const schema = mongoose.Schema({ // eslint-disable-line
   number: { type: Number },
+  /*
+    caution: won't be able to tell first name from last name.
+    note the properties on: http://www.espn.com/nba/player/_/id/6450/kawhi-leonard
+  */
   name: { type: String },
+  // firstName: { type: String },
+  // lastName: { type: String },
   position: { type: String },
   blocks: { type: Number, default: 0 },
   goals: { type: Number, default: 0 },
@@ -35,6 +41,7 @@ class Player extends Model {
     this.goalsMissed += 1
   }
 
+  /* take note of Sinon stubs, read on Proxy pattern */
   catchSnitch(time, snitch) {
     if (this.position !== 'Seeker') {
       throw new Error('Cannot catch snitch, player is not a seeker')
