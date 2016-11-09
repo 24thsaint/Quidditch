@@ -28,7 +28,7 @@ describe('Snitch', () => {
     expect(snitch.caughtOn).to.be.undefined // eslint-disable-line
   })
 
-  describe('#appeared', () => {
+  describe('#appeared()', () => {
     it('indicate that the snitch has appeared', () => {
       snitch.appeared(new Date())
       expect(snitch.appearedOn).to.not.be.undefined // eslint-disable-line
@@ -36,7 +36,7 @@ describe('Snitch', () => {
     })
   })
 
-  describe('#caught', () => {
+  describe('#caught()', () => {
     it('indicate that the snitch has been caught after 3 minutes', () => {
       const snitchCaughtSimulatedTime = new Date(snitch.appearedOn)
       snitchCaughtSimulatedTime.setMinutes(snitchCaughtSimulatedTime.getMinutes() + 3)
