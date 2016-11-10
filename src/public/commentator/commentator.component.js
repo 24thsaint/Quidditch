@@ -19,12 +19,12 @@ angular // eslint-disable-line
           }
           $scope.game = data
           $scope.teams = []
-          for (const team of data.teams) {
-            $http.get(`/team/${team._id}`) // eslint-disable-line
+          data.teams.forEach((team) => {
+            $http.get(`/team/find/${team._id}`) // eslint-disable-line
             .success((teamData) => {
               $scope.teams.push(teamData)
             })
-          }
+          })
         })
 
       $scope.goal = () => {

@@ -122,13 +122,12 @@ app.get('/game/:gameId/team/all', (request, response) => {
   })
 })
 
-app.get('/team/:id', (request, response) => {
+app.get('/team/find/:id', (request, response) => {
   const id = request.params.id
+  response.writeHead(200, { 'Content-Type': 'application/json' })
 
   Team.findOne({ _id: id }).populate('players').exec()
   .then((team) => {
-    response.writeHead(200, { 'Content-Type': 'application/json' })
-
     const json = {
       team,
       score: team.score,
@@ -137,7 +136,6 @@ app.get('/team/:id', (request, response) => {
     response.end(JSON.stringify(json, null, 2))
   })
   .catch(() => {
-    response.writeHead(404, { 'Content-Type': 'application/json' })
     response.end(JSON.stringify({ message: 'Resource not found' }, null, 2))
   })
 })

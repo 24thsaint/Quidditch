@@ -1,4 +1,4 @@
-import angular from 'angular'
+import angular from 'angular' // eslint-disable-line
 import 'angular-route'
 import './app.module'
 import './app.config'
