@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 
-import chai from 'chai' // eslint-disable-line
+import chai from 'chai'
 import faker from 'faker'
 import Snitch from '../models/Snitch'
 import Player from '../models/Player'
@@ -30,61 +30,71 @@ function reinitialize() {
 
   s1 = new Player({
     number: '1',
-    name: faker.name.findName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
     position: 'Seeker',
   })
 
   k1 = new Player({
     number: '2',
-    name: faker.name.findName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
     position: 'Keeper',
   })
 
   c1 = new Player({
     number: '3',
-    name: faker.name.findName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
     position: 'Chaser',
   })
 
   c2 = new Player({
     number: '4',
-    name: faker.name.findName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
     position: 'Chaser',
   })
 
   c3 = new Player({
     number: '5',
-    name: faker.name.findName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
     position: 'Chaser',
   })
 
   s2 = new Player({
     number: '6',
-    name: faker.name.findName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
     position: 'Seeker',
   })
 
   k2 = new Player({
     number: '7',
-    name: faker.name.findName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
     position: 'Keeper',
   })
 
   c4 = new Player({
     number: '8',
-    name: faker.name.findName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
     position: 'Chaser',
   })
 
   c5 = new Player({
     number: '9',
-    name: faker.name.findName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
     position: 'Chaser',
   })
 
   c6 = new Player({
     number: '10',
-    name: faker.name.findName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
     position: 'Chaser',
   })
 
