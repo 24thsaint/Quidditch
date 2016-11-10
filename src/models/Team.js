@@ -1,12 +1,12 @@
 import mongoose from 'mongoose'
 import Model from './Model'
 
-const schema = mongoose.Schema({ // eslint-disable-line
-  name: { type: String },
-  players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }],
-})
-
 class Team extends Model {
+
+  static _schema = mongoose.Schema({ // eslint-disable-line
+    name: { type: String },
+    players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }],
+  })
 
   addPlayer(player) {
     this.players.push(player)
@@ -15,18 +15,16 @@ class Team extends Model {
   get score() {
     let goalsMade = 0
     let score = 0
-    for (const player of this.players) {
+    this.players.forEach((player) => {
       goalsMade += player.goals
       if (player.snitchCaught) {
         score += 30 // https://www.usquidditch.org/about/rules
       }
-    }
+    })
     score += goalsMade * 10
-    this.score = score
     return score
   }
 
 }
 
-// export default Team
-export default Model.load('Team', Team, schema)
+export default Model.load('Team', Team)

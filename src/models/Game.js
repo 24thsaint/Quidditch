@@ -1,19 +1,19 @@
 import mongoose from 'mongoose'
 import Model from './Model'
 
-const schema = mongoose.Schema({  // eslint-disable-line
-  teams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],
-  snitch: { type: mongoose.Schema.Types.ObjectId, ref: 'Snitch' },
-  playHistory: [{
-    time: Date,
-    eventType: String,
-    player: { type: mongoose.Schema.Types.ObjectId, ref: 'Player' },
-  }],
-  startTime: { type: Date },
-  endTime: { type: Date },
-})
-
 class Game extends Model {
+
+  static _schema = mongoose.Schema({  // eslint-disable-line
+    teams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],
+    snitch: { type: mongoose.Schema.Types.ObjectId, ref: 'Snitch' },
+    playHistory: [{
+      time: Date,
+      eventType: String,
+      player: { type: mongoose.Schema.Types.ObjectId, ref: 'Player' },
+    }],
+    startTime: { type: Date },
+    endTime: { type: Date },
+  })
 
   end(time, seeker) {
     if (this.snitch.caughtOn === undefined) {
@@ -35,10 +35,10 @@ class Game extends Model {
     return message
   }
 
-  start(time) {
-    this.startTime = time
+  start() {
+    this.startTime = new Date(Date.now())
     const message = {
-      time: new Date(),
+      time: this.startTime,
       eventType: 'start',
     }
     this.playHistory.push(message)
@@ -91,10 +91,9 @@ class Game extends Model {
     if (this.endTime !== undefined) {
       throw new Error('Game has already ended')
     }
-    const appearanceDate = new Date()
-    this.snitch.appeared(appearanceDate)
+    this.snitch.appeared()
     const message = {
-      time: appearanceDate,
+      time: this.snitch.appearedOn,
       eventType: 'snitchAppears',
     }
     this.playHistory.push(message)
@@ -102,13 +101,9 @@ class Game extends Model {
   }
 
   snitchCaught(seeker) {
-    if (this.endTime !== undefined) {
-      throw new Error('Game has already ended')
-    }
-    const now = new Date()
-    seeker.catchSnitch(now, this.snitch)
-    return this.end(now, seeker)
+    seeker.catchSnitch(this.snitch)
+    return this.end(this.snitch.caughtOn, seeker)
   }
 }
 
-export default Model.load('Game', Game, schema)
+export default Model.load('Game', Game)
