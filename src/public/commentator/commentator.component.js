@@ -1,7 +1,6 @@
 /* eslint-env browser */
 /* global $, angular */
 /* eslint-disable no-param-reassign */
-/* eslint-disable no-console */
 
 angular // eslint-disable-line
 .module('commentator')
@@ -15,7 +14,9 @@ angular // eslint-disable-line
 
       $http.get(`/game/find/${gameId}`)
         .success((data) => {
-          data.snitch.caughtOn = new Date(data.snitch.caughtOn).toLocaleString()
+          if (data.snitch.caughtOn !== undefined) {
+            data.snitch.caughtOn = new Date(data.snitch.caughtOn).toLocaleString()
+          }
           $scope.game = data
           $scope.teams = []
           for (const team of data.teams) {
@@ -24,9 +25,6 @@ angular // eslint-disable-line
               $scope.teams.push(teamData)
             })
           }
-        })
-        .error((data) => {
-          console.log(`ERROR: ${data}`) // eslint-disable-line
         })
 
       $scope.goal = () => {
@@ -41,7 +39,7 @@ angular // eslint-disable-line
               $('#notification').removeClass().addClass('alert alert-success')
               $(`#${response.teamId}`).html(response.score)
               $('#notification').fadeIn()
-              $('#notification').html(`<b>Goal!</b> ${response.player} scored a goal for ${response.team}.`)
+              $('#notification').html(`<b>Goal!</b> <mark><b>${response.player}</b></mark> scored a goal for ${response.team}.`)
               $('#notification').delay(2000).slideUp()
             } else {
               $('#notification').removeClass().addClass('alert alert-danger')
@@ -64,7 +62,7 @@ angular // eslint-disable-line
             if (response.status === 'OK') {
               $('#notification').removeClass().addClass('alert alert-warning')
               $('#notification').fadeIn()
-              $('#notification').html(`<b>Missed!</b> ${response.player} missed a goal.`)
+              $('#notification').html(`<b>Missed!</b> <mark><b>${response.player}</b></mark> missed a goal.`)
               $('#notification').delay(2000).slideUp()
             } else {
               $('#notification').removeClass().addClass('alert alert-danger')
@@ -87,7 +85,7 @@ angular // eslint-disable-line
             if (response.status === 'OK') {
               $('#notification').removeClass().addClass('alert alert-info')
               $('#notification').fadeIn()
-              $('#notification').html(`<b>Blocked!</b> ${response.player} blocked an attempted goal.`)
+              $('#notification').html(`<b>Blocked!</b> <mark><b>${response.player}</b></mark> blocked an attempted goal.`)
               $('#notification').delay(2000).slideUp()
             } else {
               $('#notification').removeClass().addClass('alert alert-danger')
@@ -107,12 +105,11 @@ angular // eslint-disable-line
           contentType: 'application/json; charset=utf-8',
           dataType: 'json',
           success(response) {
-            console.log(response)
             if (response.status === 'OK') {
               $(`#${response.teamId}`).html(response.score)
               $('#notification').removeClass().addClass('alert alert-success')
               $('#notification').fadeIn()
-              $('#notification').html(`<b>GAME ENDED ON ${new Date(response.endTime).toLocaleString()}!</b> Snitch was caught by ${response.player}.`)
+              $('#notification').html(`<b>GAME ENDED ON ${new Date(response.endTime).toLocaleString()}!</b> Snitch was caught by <mark><b>${response.player}</b></mark>.`)
             } else {
               $('#notification').removeClass().addClass('alert alert-danger')
               $('#notification').fadeIn()
@@ -130,7 +127,6 @@ angular // eslint-disable-line
           contentType: 'application/json; charset=utf-8',
           dataType: 'json',
           success(response) {
-            console.log(response)
             if (response.status === 'OK') {
               $('#notification').removeClass().addClass('alert alert-info')
               $('#notification').fadeIn()

@@ -15,7 +15,7 @@
     <div class="panel-body">
       <span ng-repeat="player in teamData.team.players">
         <span ng-if="player.position === 'Chaser'">
-          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
+          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.firstName }} {{ player.lastName }}</button><br />
         </span>
       </span>
     </div>
@@ -26,7 +26,7 @@
     <div class="panel-body">
       <span ng-repeat="player in teamData.team.players">
         <span ng-if="player.position === 'Keeper'">
-          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
+          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.firstName }} {{ player.lastName }}</button><br />
         </span>
       </span>
     </div>
@@ -37,7 +37,7 @@
     <div class="panel-body">
       <span ng-repeat="player in teamData.team.players">
         <span ng-if="player.position === 'Seeker'">
-          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.name }}</button><br />
+          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.firstName }} {{ player.lastName }}</button><br />
         </span>
       </span>
     </div>
@@ -52,7 +52,7 @@
     <div ng-if="game.snitch.caughtOn !== undefined">
       <div class="alert alert-success">
         <p>
-          <b>GAME ENDED ON {{ game.snitch.caughtOn }}!</b><br /> Snitch was caught by <b>{{ game.snitch.caughtBy.name }}</b>.
+          <b>GAME ENDED ON {{ game.snitch.caughtOn }}!</b><br /> Snitch was caught by <b>{{ game.snitch.caughtBy.firstName }} {{ game.snitch.caughtBy.lastName }}</b>.
         </p>
       </div>
     </div>

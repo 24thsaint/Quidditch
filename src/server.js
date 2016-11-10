@@ -59,7 +59,6 @@ app.get('/game/:gameId/play-by-play', (request, response) => {
     model: 'Player',
   }).exec()
   .then((game) => {
-    console.log(game)
     response.render('playByPlay.html', { playHistory: game.playHistory })
   })
 })
@@ -173,7 +172,7 @@ app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
         .then((team) => {
           const jsonResponse = JSON.stringify({
             status: 'OK',
-            player: player.name,
+            player: `${player.firstName} ${player.lastName}`,
             team: team.name,
             teamId: team._id, // eslint-disable-line
             score: team.score,
@@ -227,7 +226,7 @@ app.post('/game/:gameId/chaser/miss/:token', (request, response) => {
 
         const jsonResponse = JSON.stringify({
           status: 'OK',
-          player: player.name,
+          player: `${player.firstName} ${player.lastName}`,
         })
 
         response.end(jsonResponse)
@@ -272,7 +271,7 @@ app.post('/game/:gameId/keeper/block/:token', (request, response) => {
 
         const jsonResponse = JSON.stringify({
           status: 'OK',
-          player: player.name,
+          player: `${player.firstName} ${player.lastName}`,
         })
 
         response.end(jsonResponse)
@@ -320,10 +319,9 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
 
           Team.findOne({ _id: seeker.team }).populate('players').exec() // eslint-disable-line
           .then((team) => {
-            console.log(team)
             const jsonResponse = JSON.stringify({
               status: 'OK',
-              player: seeker.name,
+              player: `${seeker.firstName} ${seeker.lastName}`,
               endTime: game.endTime,
               score: team.score,
               teamId: team._id, // eslint-disable-line
