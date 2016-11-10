@@ -1,99 +1,91 @@
 import faker from 'faker'
-import mongoose from 'mongoose'
 
 import Player from './dist/models/Player'
 import Game from './dist/models/Game'
 import Team from './dist/models/Team'
 import Snitch from './dist/models/Snitch'
 
-let teams
-let s1
-let k1
-let c1
-let c2
-let c3
-let s2
-let k2
-let c4
-let c5
-let c6
-let team1
-let team2
-let redTeam
-let blueTeam
-let game
+const teams = []
 
-teams = []
-
-s1 = new Player({
+const s1 = new Player({
   number: faker.random.number(99),
-  name: faker.name.findName(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
   position: 'Seeker',
 })
 
-k1 = new Player({
+const k1 = new Player({
   number: faker.random.number(99),
-  name: faker.name.findName(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
   position: 'Keeper',
 })
 
-c1 = new Player({
+const c1 = new Player({
   number: faker.random.number(99),
-  name: faker.name.findName(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
   position: 'Chaser',
 })
 
-c2 = new Player({
+const c2 = new Player({
   number: faker.random.number(99),
-  name: faker.name.findName(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
   position: 'Chaser',
 })
 
-c3 = new Player({
+const c3 = new Player({
   number: faker.random.number(99),
-  name: faker.name.findName(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
   position: 'Chaser',
 })
 
-s2 = new Player({
+const s2 = new Player({
   number: faker.random.number(99),
-  name: faker.name.findName(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
   position: 'Seeker',
 })
 
-k2 = new Player({
+const k2 = new Player({
   number: faker.random.number(99),
-  name: faker.name.findName(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
   position: 'Keeper',
 })
 
-c4 = new Player({
+const c4 = new Player({
   number: faker.random.number(99),
-  name: faker.name.findName(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
   position: 'Chaser',
 })
 
-c5 = new Player({
+const c5 = new Player({
   number: faker.random.number(99),
-  name: faker.name.findName(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
   position: 'Chaser',
 })
 
-c6 = new Player({
+const c6 = new Player({
   number: faker.random.number(99),
-  name: faker.name.findName(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
   position: 'Chaser',
 })
 
-team1 = [s1, k1, c1, c2, c3]
-team2 = [s2, k2, c4, c5, c6]
+const team1 = [s1, k1, c1, c2, c3]
+const team2 = [s2, k2, c4, c5, c6]
 
-redTeam = new Team({
+const redTeam = new Team({
   name: faker.address.country(),
   players: team1,
 })
 
-blueTeam = new Team({
+const blueTeam = new Team({
   name: faker.address.country(),
   players: team2,
 })
@@ -125,8 +117,8 @@ snitch.save()
       player.save()
     }
 
-    game = new Game({ teams, snitch })
-    game.start(new Date())
+    const game = new Game({ teams, snitch })
+    game.start()
     game.save()
       .then(() => {
         console.log('Database seed successful')
