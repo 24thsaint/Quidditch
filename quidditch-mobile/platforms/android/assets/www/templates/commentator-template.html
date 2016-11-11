@@ -1,0 +1,79 @@
+
+<input type="hidden" name="game._id" id="game._id" value="{{ game._id }}">
+
+<div ng-repeat="teamData in teams" class="col-md-4 text-center jumbotron">
+
+  <div class="well">
+    <h3 class="bg-primary">{{ teamData.team.name }}</h3>
+  </div>
+
+  <div class="well">
+    <h1 id="{{ teamData.team._id }}">{{ teamData.score }}</h1>
+  </div>
+  <div class="panel panel-success">
+    <div class="panel-heading">Chasers</div>
+    <div class="panel-body">
+      <span ng-repeat="player in teamData.team.players">
+        <span ng-if="player.position === 'Chaser'">
+          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.firstName }} {{ player.lastName }}</button><br />
+        </span>
+      </span>
+    </div>
+  </div>
+  <br>
+  <div class="panel panel-success">
+    <div class="panel-heading">Keeper</div>
+    <div class="panel-body">
+      <span ng-repeat="player in teamData.team.players">
+        <span ng-if="player.position === 'Keeper'">
+          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.firstName }} {{ player.lastName }}</button><br />
+        </span>
+      </span>
+    </div>
+  </div>
+  <br>
+  <div class="panel panel-success">
+    <div class="panel-heading">Seeker</div>
+    <div class="panel-body">
+      <span ng-repeat="player in teamData.team.players">
+        <span ng-if="player.position === 'Seeker'">
+          <button type="button" ng-class="selectedState==this.$id ? 'btn btn-primary' : 'btn btn-default'" ng-click="select(this, player._id)"><span class="badge">{{ player.number }}</span> {{ player.firstName }} {{ player.lastName }}</button><br />
+        </span>
+      </span>
+    </div>
+  </div>
+  <br>
+</div>
+
+<div class="col-md-4 text-center">
+  <div class="well">
+    <div id="notification" class="alert" hidden="true"></div>
+
+    <div ng-if="game.snitch.caughtOn !== undefined">
+      <div class="alert alert-success">
+        <p>
+          <b>GAME ENDED ON {{ game.snitch.caughtOn }}!</b><br /> Snitch was caught by <b>{{ game.snitch.caughtBy.firstName }} {{ game.snitch.caughtBy.lastName }}</b>.
+        </p>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-default" ng-click="goal()">Goal Made</button>
+    <button type="button" class="btn btn-default" ng-click="miss()">Goal Missed</button>
+    <br>
+    <button type="button" class="btn btn-default" ng-click="block()">Goal Blocked</button>
+    <br>
+    <button type="button" class="btn btn-default" ng-click="snitchAppeared()">Snitch Appeared</button>
+    <button type="button" class="btn btn-danger" ng-click="end()">Snitch Caught</button>
+    <br>
+    <br>
+  </div>
+  <div class="list-group">
+    <a class="list-group-item" href="/game/{{ game._id }}/box-score">BOX SCORE STATS</a>
+    <br>
+    <a class="list-group-item" href="/game/{{ game._id }}/play-by-play">PLAY BY PLAY</a>
+  </div>
+</div>
+
+<div ng-if="teamData.teams.length === 0" class="col-md-12 text-center">
+  <h1>No data initialized</h1>
+</div>
