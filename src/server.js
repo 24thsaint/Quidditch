@@ -2,7 +2,6 @@ import http from 'http'
 import express from 'express'
 import fs from 'fs'
 import mongoose from 'mongoose'
-import consolidate from 'consolidate'
 import bodyParser from 'body-parser'
 import Team from '../dist/models/Team'
 import Player from '../dist/models/Player'
@@ -14,9 +13,6 @@ const WebSocketServer = require('ws').Server
 const server = http.createServer()
 const app = express()
 const socket = new WebSocketServer({ server })
-app.engine('html', consolidate.swig)
-app.set('view engine', 'html')
-app.set('views', './src/views')
 app.use(bodyParser.json())
 mongoose.Promise = Promise
 app.use(express.static('public'))
