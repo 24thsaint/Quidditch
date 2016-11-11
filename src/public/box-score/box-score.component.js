@@ -34,15 +34,8 @@ angular
       ws.onmessage = (evt) => {
         const data = JSON.parse(evt.data)
         if (data.type === 'BOX-SCORE') {
-          // $scope.teams = []
-          // data.teams.forEach((team) => {
-          //   $scope.teams.push(team)
-          //   $scope.$apply()
-          // })
           $scope.teams = data.teams
           $scope.$apply()
-          // $(`#${data.teamId}`).html(data.score)
-          // console.log($scope.teams)
         }
       }
     },
