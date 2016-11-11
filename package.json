@@ -11,7 +11,7 @@
     "test:ci": "NODE_ENV=ci mocha --compilers js:babel-core/register ./src/integration-tests/*.test.js",
     "watch": "babel src/ --out-dir dist/ --watch",
     "build": "./node_modules/.bin/babel src/ --out-dir dist/",
-    "build:browserify" : "./node_modules/.bin/browserify dist/public -o public/dist/js/core.js -v",
+    "build:browserify" : "./node_modules/.bin/browserify dist/public -o public/dist/js/core.js",
     "seed": "./node_modules/.bin/babel seed.js -o seed-dist.js && node seed-dist.js",
     "postinstall": "npm run build && npm run build:browserify && npm run seed",
     "start": "node dist/",
