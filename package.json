@@ -13,7 +13,7 @@
     "build": "./node_modules/.bin/babel src/ --out-dir dist/",
     "build:browserify" : "./node_modules/.bin/browserify dist/public -o public/dist/js/core.js",
     "seed": "./node_modules/.bin/babel seed.js -o seed-dist.js && node seed-dist.js",
-    "postinstall": "npm run build && npm run build:browserify && npm run seed",
+    "postinstall": "npm run build && npm run seed",
     "start": "node dist/",
     "lint": "eslint"
   },
