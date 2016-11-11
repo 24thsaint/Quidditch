@@ -1,7 +1,7 @@
 {
   "name": "quidditch-final-exam",
   "version": "1.0.0",
-  "description": "",
+  "description": "Quidditch",
   "main": "server.js",
   "engines": {
     "node": "6.9.1"
