@@ -46,6 +46,14 @@ function sendBoxScoreSocketResponse(teams) {
   })
 }
 
+function sendPlayByPlaySocketResponse(response) {
+  const socketResponse = response
+  socketResponse.type = 'PLAY-BY-PLAY'
+  socket.clients.forEach((client) => {
+    client.send(JSON.stringify(socketResponse))
+  })
+}
+
 // ================ REST stuff
 
 app.get('/games/list', (request, response) => {
@@ -73,7 +81,11 @@ app.get('/game/find/:gameId', (request, response) => {
       path: 'caughtBy',
       model: 'Player',
     },
-  }).exec()
+  }).populate({
+    path: 'playHistory.player',
+    model: 'Player',
+  })
+  .exec()
   .then((game) => {
     response.writeHead(200, { 'Content-Type': 'application/json' })
     response.end(JSON.stringify(game, null, 2))
@@ -139,15 +151,10 @@ app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
     .then((player) => {
       Game.findOne({ _id: gameId }).exec()
       .then((game) => {
-        const jsonResponse = game.goalMade(player)
-        jsonResponse.type = 'PLAY-BY-PLAY'
+        const socketResponse = game.goalMade(player)
+        sendPlayByPlaySocketResponse(socketResponse)
         game.save()
         player.save()
-
-        socket.clients.forEach((client) => {
-          client.send(JSON.stringify(jsonResponse))
-        })
-
         return game
       })
       .then((game) => {
@@ -200,7 +207,7 @@ app.post('/game/:gameId/chaser/miss/:token', (request, response) => {
       Game.findOne({ _id: gameId }).exec()
       .then((game) => {
         const socketResponse = game.goalMissed(player)
-        socketResponse.type = 'PLAY-BY-PLAY'
+        sendPlayByPlaySocketResponse(socketResponse)
         game.save()
         player.save()
         .then(() => {
@@ -247,7 +254,7 @@ app.post('/game/:gameId/keeper/block/:token', (request, response) => {
       Game.findOne({ _id: gameId }).exec()
       .then((game) => {
         const socketResponse = game.goalBlocked(player)
-        socketResponse.type = 'PLAY-BY-PLAY'
+        sendPlayByPlaySocketResponse(socketResponse)
         game.save()
         player.save()
         .then(() => {
@@ -255,10 +262,6 @@ app.post('/game/:gameId/keeper/block/:token', (request, response) => {
           .then((teams) => {
             sendBoxScoreSocketResponse(teams)
           })
-        })
-
-        socket.clients.forEach((client) => {
-          client.send(JSON.stringify(socketResponse))
         })
 
         const jsonResponse = JSON.stringify({
@@ -296,7 +299,7 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
       Player.findOne({ _id: jsonRequest.seeker }).exec()
       .then((seeker) => {
         const socketResponse = game.snitchCaught(seeker)
-        socketResponse.type = 'PLAY-BY-PLAY'
+        sendPlayByPlaySocketResponse(socketResponse)
 
         game.snitch.save()
         .then(() => {
@@ -309,10 +312,6 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
             .then((teams) => {
               sendBoxScoreSocketResponse(teams)
             })
-          })
-
-          socket.clients.forEach((client) => {
-            client.send(JSON.stringify(socketResponse))
           })
 
           Team.findOne({ _id: seeker.team }).populate('players').exec() // eslint-disable-line
@@ -356,14 +355,10 @@ app.post('/game/:gameId/snitch/appeared/:token', (request, response) => {
     Game.findOne({ _id: gameId }).populate('snitch').exec()
     .then((game) => {
       const socketResponse = game.snitchAppeared()
-      socketResponse.type = 'PLAY-BY-PLAY'
+      sendPlayByPlaySocketResponse(socketResponse)
       game.snitch.save()
       .then(() => {
         game.save()
-
-        socket.clients.forEach((client) => {
-          client.send(JSON.stringify(socketResponse))
-        })
 
         const jsonResponse = JSON.stringify({
           status: 'OK',
@@ -396,7 +391,8 @@ app.post('/game/start/:token', (request, response) => {
         snitch,
         playHistory: [],
       })
-      game.start()
+      const socketResponse = game.start()
+      sendPlayByPlaySocketResponse(socketResponse)
       game.save()
       .then(() => {
         response.redirect(`/game/${game._id}`) // eslint-disable-line
