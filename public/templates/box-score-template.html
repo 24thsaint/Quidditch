@@ -1,4 +1,43 @@
-<div ng-repeat="team in teams" class="col-md-6 text-center well">
+<div class="col-md-12">
+  <div class="text-center">
+    <h1 class="well">Box Score Statistics</h1>
+  </div>
+</div>
+
+<div ng-repeat="team in teams" class="col-md-6 text-center well page-header">
   <h1>{{ team.team.name }}</h1>
   <h1 class="bg-primary" id="{{ team.team._id }}">{{ team.score }}</h1>
 </div>
+
+<div class="col-md-1"></div>
+<div class="col-md-10">
+  <table ng-repeat="team in teams" class="table table-hover table-responsive">
+    <thead>
+      <th>Name</th>
+      <th>Position</th>
+      <th>Goals</th>
+      <th>Misses</th>
+      <th>Blocks</th>
+      <th>Snitch</th>
+      <th>Points</th>
+    </thead>
+    <tbody>
+        <tr ng-repeat="player in team.team.players">
+          <td class="capitalize"><b>{{ player.firstName.substr(0, 1) }} {{ player.lastName }}</b></td>
+          <td>{{ player.position }}</td>
+          <td>{{ player.position === 'Chaser' ? player.goals : '-' }}</td>
+          <td>{{ player.position === 'Chaser' ? player.goalsMissed : '-' }}</td>
+          <td>{{ player.position === 'Keeper' ? player.blocks : '-' }}</td>
+          <td>{{ player.position === 'Seeker' ? player.snitchCaught : '-' }}</td>
+          <td>
+            {{ player.position === 'Chaser' ?
+                player.goals * 10 : player.position === 'Seeker' ?
+                  player.snitchCaught ?
+                    '30' : '0' : '-'
+            }}
+          </td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+<div class="col-md-1"></div>

@@ -27,30 +27,24 @@ const tokens = ['123']
 
 // =============== VIEWS
 
-// app.get('/game/:gameId/box-score', (request, response) => {
-//   const id = request.params.gameId
-//
-//   Game.findOne({ _id: id }).populate({
-//     path: 'teams',
-//     model: 'Team',
-//     populate: {
-//       path: 'players',
-//       model: 'Player',
-//     },
-//   }).exec()
-//   .then((game) => {
-//     const tallies = []
-//     for (const team of game.teams) {
-//       const temp = {
-//         teamId: team._id, //eslint-disable-line
-//         teamName: team.name,
-//         score: team.score,
-//       }
-//       tallies.push(temp)
-//     }
-//     response.render('boxScore.html', { tallies })
-//   })
-// })
+function sendBoxScoreSocketResponse(teams) {
+  const teamsResponseData = []
+
+  teams.forEach((team) => {
+    const json = {
+      team,
+      score: team.score,
+    }
+
+    teamsResponseData.push(json)
+  })
+
+  const socketRes = { type: 'BOX-SCORE', teams: teamsResponseData }
+
+  socket.clients.forEach((client) => {
+    client.send(JSON.stringify(socketRes))
+  })
+}
 
 app.get('/game/:gameId/play-by-play', (request, response) => {
   const id = request.params.gameId
@@ -164,24 +158,27 @@ app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
         socket.clients.forEach((client) => {
           client.send(JSON.stringify(jsonResponse))
         })
+
+        return game
       })
-      .then(() => {
-        Team.findOne({ _id: player.team._id }).populate('players').exec() // eslint-disable-line
-        .then((team) => {
-          const jsonResponse = JSON.stringify({
+      .then((game) => {
+        Team.find({ _id: { $in: game.teams } }).populate('players').exec()
+        .then((teams) => {
+          sendBoxScoreSocketResponse(teams)
+          const jsonResponse = {
             status: 'OK',
             player: `${player.firstName} ${player.lastName}`,
-            team: team.name,
-            teamId: team._id, // eslint-disable-line
-            score: team.score,
-            type: 'BOX-SCORE',
+          }
+
+          teams.forEach((team) => {
+            if (player.team.name === team.name) {
+              jsonResponse.team = team.name
+              jsonResponse.score = team.score
+              jsonResponse.teamId = team._id // eslint-disable-line
+            }
           })
 
-          socket.clients.forEach((client) => {
-            client.send(jsonResponse)
-          })
-
-          response.end(jsonResponse)
+          response.end(JSON.stringify(jsonResponse))
         })
       })
       .catch((err) => {
@@ -217,9 +214,11 @@ app.post('/game/:gameId/chaser/miss/:token', (request, response) => {
         socketResponse.type = 'PLAY-BY-PLAY'
         game.save()
         player.save()
-
-        socket.clients.forEach((client) => {
-          client.send(JSON.stringify(socketResponse))
+        .then(() => {
+          Team.find({ _id: { $in: game.teams } }).populate('players').exec()
+          .then((teams) => {
+            sendBoxScoreSocketResponse(teams)
+          })
         })
 
         const jsonResponse = JSON.stringify({
@@ -262,6 +261,12 @@ app.post('/game/:gameId/keeper/block/:token', (request, response) => {
         socketResponse.type = 'PLAY-BY-PLAY'
         game.save()
         player.save()
+        .then(() => {
+          Team.find({ _id: { $in: game.teams } }).populate('players').exec()
+          .then((teams) => {
+            sendBoxScoreSocketResponse(teams)
+          })
+        })
 
         socket.clients.forEach((client) => {
           client.send(JSON.stringify(socketResponse))
@@ -310,6 +315,12 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
         })
         .then(() => {
           game.save()
+          .then(() => {
+            Team.find({ _id: { $in: game.teams } }).populate('players').exec()
+            .then((teams) => {
+              sendBoxScoreSocketResponse(teams)
+            })
+          })
 
           socket.clients.forEach((client) => {
             client.send(JSON.stringify(socketResponse))
@@ -323,19 +334,6 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
               endTime: game.endTime,
               score: team.score,
               teamId: team._id, // eslint-disable-line
-            })
-
-            const scoreSocketResponse = JSON.stringify({
-              status: 'OK',
-              player: seeker.name,
-              team: team.name,
-              teamId: team._id, // eslint-disable-line
-              score: team.score,
-              type: 'BOX-SCORE',
-            })
-
-            socket.clients.forEach((client) => {
-              client.send(scoreSocketResponse)
             })
 
             response.end(jsonResponse)
