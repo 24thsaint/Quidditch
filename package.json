@@ -26,6 +26,7 @@
     "babel-preset-stage-1": "^6.16.0",
     "body-parser": "^1.15.2",
     "bootstrap": "^3.3.7",
+    "browserify": "^13.1.1",
     "consolidate": "^0.14.1",
     "cordova-common": "^1.5.1",
     "elementtree": "^0.1.6",
