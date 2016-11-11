@@ -7,7 +7,7 @@ angular
 .component('playbyplay', {
   templateUrl: '/templates/play-by-play.html',
   controller: ['$routeParams', '$http', '$scope',
-    function HomeController($routeParams, $http, $scope) {
+    ($routeParams, $http, $scope) => {
       const gameId = $routeParams.gameId
       $http.get(`/game/find/${gameId}`)
         .success((data) => {
