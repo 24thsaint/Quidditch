@@ -16,6 +16,9 @@ angular
         .when('/game/:gameId/box-score', {
           template: '<box></box>',
         })
+        .when('/game/:gameId/play-by-play', {
+          template: '<playbyplay></playbyplay>',
+        })
         .otherwise('/')
     },
   ])

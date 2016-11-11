@@ -3,4 +3,5 @@ angular.module('app', [
   'commentator',
   'home',
   'box',
+  'playbyplay',
 ])
