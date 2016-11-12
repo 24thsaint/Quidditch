@@ -42,6 +42,7 @@ class Player extends Model {
     }
     snitch.caught(this)
     this.snitchCaught = true
+    this.goals = 3 // catch only once, score it only once.
   }
 }
 

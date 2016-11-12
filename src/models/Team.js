@@ -17,9 +17,6 @@ class Team extends Model {
     let score = 0
     this.players.forEach((player) => {
       goalsMade += player.goals
-      if (player.snitchCaught) {
-        score += 30 // https://www.usquidditch.org/about/rules
-      }
     })
     score += goalsMade * 10
     return score

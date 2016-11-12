@@ -30,11 +30,7 @@
           <td>{{ player.position === 'Keeper' ? player.blocks : '-' }}</td>
           <td>{{ player.position === 'Seeker' ? player.snitchCaught : '-' }}</td>
           <td>
-            {{ player.position === 'Chaser' ?
-                player.goals * 10 : player.position === 'Seeker' ?
-                  player.snitchCaught ?
-                    '30' : '0' : '-'
-            }}
+            {{ player.goals * 10 }}
           </td>
         </tr>
     </tbody>
