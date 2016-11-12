@@ -4,8 +4,6 @@ angular
   .module('app')
   .config(['$locationProvider', '$routeProvider',
     function config($locationProvider, $routeProvider) {
-      $locationProvider.html5Mode(true)
-
       $routeProvider
         .when('/', {
           template: '<home></home>',

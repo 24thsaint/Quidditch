@@ -29,6 +29,7 @@ angular
         })
 
       let host = ''
+      const wsUri = uri.split('://')
 
       if (location.protocol === 'http:') {
         host = 'ws:'
@@ -36,7 +37,7 @@ angular
         host = 'wss:'
       }
 
-      const ws = new WebSocket(`${host}//${window.location.host}/`)
+      const ws = new WebSocket(`${host}//${wsUri[1]}/`)
 
       ws.onmessage = (evt) => {
         const play = JSON.parse(evt.data)
@@ -68,6 +69,7 @@ angular
               break
             default:
           }
+          $scope.$apply()
         }
       }
     },

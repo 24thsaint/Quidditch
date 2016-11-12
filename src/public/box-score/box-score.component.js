@@ -30,6 +30,7 @@ angular
         })
 
       let host = ''
+      const wsUri = uri.split('://')
 
       if (location.protocol === 'http:') {
         host = 'ws:'
@@ -37,7 +38,7 @@ angular
         host = 'wss:'
       }
 
-      const ws = new WebSocket(`${host}//${window.location.host}/`)
+      const ws = new WebSocket(`${host}//${wsUri[1]}/`)
 
       ws.onmessage = (evt) => {
         const data = JSON.parse(evt.data)
