@@ -5,7 +5,7 @@
 angular // eslint-disable-line
 .module('commentator')
 .component('commentator', {
-  templateUrl: '/templates/commentator-template.html',
+  templateUrl: 'templates/commentator-template.html',
   controller: ['$routeParams', '$http', '$scope',
     ($routeParams, $http, $scope) => {
       const gameId = $routeParams.gameId

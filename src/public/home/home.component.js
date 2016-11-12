@@ -5,7 +5,7 @@
 angular
   .module('home')
   .component('home', {
-    templateUrl: '/templates/home-template.html',
+    templateUrl: 'templates/home-template.html',
     controller: ['$routeParams', '$http', '$scope',
       ($routeParams, $http, $scope) => {
         let uri = ''

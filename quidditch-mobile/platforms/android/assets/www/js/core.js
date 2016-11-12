@@ -20,6 +20,9 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function co
 },{}],2:[function(require,module,exports){
 'use strict';
 
+/* eslint-env browser */
+/* global $, angular */
+
 angular.module('app', ['ngRoute', 'commentator', 'home', 'box', 'playbyplay']);
 
 },{}],3:[function(require,module,exports){
@@ -30,14 +33,22 @@ angular.module('app', ['ngRoute', 'commentator', 'home', 'box', 'playbyplay']);
 /* eslint-disable no-param-reassign */
 
 angular.module('box').component('box', {
-  templateUrl: '/templates/box-score-template.html',
+  templateUrl: 'templates/box-score-template.html',
   controller: ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
     var gameId = $routeParams.gameId;
     $scope.teams = [];
 
-    $http.get('/game/find/' + gameId).success(function (data) {
+    var uri = '';
+
+    if (window.cordova) {
+      uri = "https://rave-quidditch.herokuapp.com";
+    } else {
+      uri = window.location.origin;
+    }
+
+    $http.get(uri + '/game/find/' + gameId).success(function (data) {
       data.teams.forEach(function (team) {
-        $http.get('/team/find/' + team._id) // eslint-disable-line
+        $http.get(uri + '/team/find/' + team._id) // eslint-disable-line
         .success(function (teamData) {
           $scope.teams.push(teamData);
         });
@@ -80,20 +91,28 @@ angular.module('box', ['ngRoute']);
 
 angular // eslint-disable-line
 .module('commentator').component('commentator', {
-  templateUrl: '/templates/commentator-template.html',
+  templateUrl: 'templates/commentator-template.html',
   controller: ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
     var gameId = $routeParams.gameId;
     var currentPlayer = void 0;
     $scope.selectedState = false;
 
-    $http.get('/game/find/' + gameId).success(function (data) {
+    var uri = '';
+
+    if (window.cordova) {
+      uri = "https://rave-quidditch.herokuapp.com";
+    } else {
+      uri = window.location.origin;
+    }
+
+    $http.get(uri + '/game/find/' + gameId).success(function (data) {
       if (data.snitch.caughtOn !== undefined) {
         data.snitch.caughtOn = new Date(data.snitch.caughtOn).toLocaleString();
       }
       $scope.game = data;
       $scope.teams = [];
       data.teams.forEach(function (team) {
-        $http.get('/team/find/' + team._id) // eslint-disable-line
+        $http.get(uri + '/team/find/' + team._id) // eslint-disable-line
         .success(function (teamData) {
           $scope.teams.push(teamData);
         });
@@ -236,18 +255,29 @@ angular.module('commentator', [// eslint-disable-line
 /* eslint-disable no-param-reassign */
 
 angular.module('home').component('home', {
-  templateUrl: '/templates/home-template.html',
+  templateUrl: 'templates/home-template.html',
   controller: ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
-    $http.get('/games/list').success(function (data) {
+    var uri = '';
+
+    if (window.cordova) {
+      uri = "https://rave-quidditch.herokuapp.com";
+    } else {
+      uri = window.location.origin;
+    }
+
+    $http.get(uri + '/games/list').success(function (data) {
       $scope.games = data;
     }).error(function (data) {
-      console.log('ERROR: ' + data);
+      console.log('ERROR: ' + data); // eslint-disable-line
     });
   }]
 });
 
 },{}],8:[function(require,module,exports){
 'use strict';
+
+/* eslint-env browser */
+/* global angular */
 
 angular.module('home', ['ngRoute']);
 
@@ -259,10 +289,18 @@ angular.module('home', ['ngRoute']);
 /* eslint-disable no-param-reassign */
 
 angular.module('playbyplay').component('playbyplay', {
-  templateUrl: '/templates/play-by-play.html',
+  templateUrl: 'templates/play-by-play.html',
   controller: ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
     var gameId = $routeParams.gameId;
-    $http.get('/game/find/' + gameId).success(function (data) {
+    var uri = '';
+
+    if (window.cordova) {
+      uri = "https://rave-quidditch.herokuapp.com";
+    } else {
+      uri = window.location.origin;
+    }
+
+    $http.get(uri + '/game/find/' + gameId).success(function (data) {
       data.playHistory.forEach(function (play) {
         play.time = new Date(play.time).toLocaleString();
       });
@@ -312,6 +350,9 @@ angular.module('playbyplay').component('playbyplay', {
 
 },{}],10:[function(require,module,exports){
 'use strict';
+
+/* eslint-env browser */
+/* global angular */
 
 angular.module('playbyplay', ['ngRoute']);
 

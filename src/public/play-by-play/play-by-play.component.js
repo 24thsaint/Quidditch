@@ -5,7 +5,7 @@
 angular
 .module('playbyplay')
 .component('playbyplay', {
-  templateUrl: '/templates/play-by-play.html',
+  templateUrl: 'templates/play-by-play.html',
   controller: ['$routeParams', '$http', '$scope',
     ($routeParams, $http, $scope) => {
       const gameId = $routeParams.gameId

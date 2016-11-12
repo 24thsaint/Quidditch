@@ -5,7 +5,7 @@
 angular
 .module('box')
 .component('box', {
-  templateUrl: '/templates/box-score-template.html',
+  templateUrl: 'templates/box-score-template.html',
   controller: ['$routeParams', '$http', '$scope',
     ($routeParams, $http, $scope) => {
       const gameId = $routeParams.gameId

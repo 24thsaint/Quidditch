@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html ng-app="app">
   <head>
-    <base href="/" target="_blank" />
+    <base href="file:///android_asset/www/" target="_blank" />
     <meta charset="utf-8">
     <title></title>
-    <script src="/js/cordova.js" charset="utf-8"></script>
-    <script src="/js/core.js" charset="utf-8"></script>
-    <script src="/js/jquery.min.js" charset="utf-8"></script>
-    <script src="/js/bootstrap.min.js" charset="utf-8"></script>
-    <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" title="no title">
+    <link rel="stylesheet" href="css/bootstrap.min.css" media="screen" title="no title">
   </head>
   <body>
     <div class="container">
       <a href="/#/"><h1>Quidditch</h1></a>
+      <button type="button" name="button" class="btn btn-primary">Bootstrap test</button>
       <hr>
       <div ng-view></div>
     </div>
+
+    <script src="cordova.js" charset="utf-8"></script>
+    <script src="js/core.js" charset="utf-8"></script>
+    <script src="js/jquery.min.js" charset="utf-8"></script>
+    <script src="js/bootstrap.min.js" charset="utf-8"></script>
   </body>
 </html>

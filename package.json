@@ -10,7 +10,7 @@
     "test": "mocha --compilers js:babel-core/register ./src/tests/*.test.js",
     "test:ci": "NODE_ENV=ci mocha --compilers js:babel-core/register ./src/integration-tests/*.test.js",
     "watch": "babel src/ --out-dir dist/ --watch",
-    "watch:browserify": "watchify -t [envify --DARK_MAGIC https://rave-quidditch.herokuapp.com/] dist/public -o public/dist/js/core.js -v",
+    "watch:browserify": "watchify -t [envify --DARK_MAGIC https://rave-quidditch.herokuapp.com] dist/public -o public/dist/js/core.js -v",
     "build": "./node_modules/.bin/babel src/ --out-dir dist/",
     "build:browserify": "mkdir -p public/dist/js && touch public/dist/js/core.js && ./node_modules/.bin/browserify -t [envify --DARK_MAGIC https://rave-quidditch.herokuapp.com/] dist/public -o public/dist/js/core.js -v",
     "seed": "./node_modules/.bin/babel seed.js -o seed-dist.js && node seed-dist.js",
