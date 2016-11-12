@@ -102,13 +102,13 @@ app.get('/game/:gameId/team/all', (request, response) => {
   .then((game) => {
     response.writeHead(200, { 'Content-Type': 'application/json' })
     const res = []
-    for (const team of game.teams) {
+    game.teams.forEach((team) => {
       const json = {
         team,
         score: team.score,
       }
       res.push(json)
-    }
+    })
     response.end(JSON.stringify(res, null, 2))
   })
 })

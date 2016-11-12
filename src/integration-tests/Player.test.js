@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 import chai from 'chai'
 import Player from '../models/Player'
+
 const expect = chai.expect
 
 describe('Player', () => {
