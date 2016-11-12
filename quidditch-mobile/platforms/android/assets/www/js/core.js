@@ -4,8 +4,6 @@
 /* global angular */
 
 angular.module('app').config(['$locationProvider', '$routeProvider', function config($locationProvider, $routeProvider) {
-  $locationProvider.html5Mode(true);
-
   $routeProvider.when('/', {
     template: '<home></home>'
   }).when('/game/:gameId', {
@@ -56,6 +54,7 @@ angular.module('box').component('box', {
     });
 
     var host = '';
+    var wsUri = uri.split('://');
 
     if (location.protocol === 'http:') {
       host = 'ws:';
@@ -63,7 +62,7 @@ angular.module('box').component('box', {
       host = 'wss:';
     }
 
-    var ws = new WebSocket(host + '//' + window.location.host + '/');
+    var ws = new WebSocket(host + '//' + wsUri[1] + '/');
 
     ws.onmessage = function (evt) {
       var data = JSON.parse(evt.data);
@@ -121,7 +120,7 @@ angular // eslint-disable-line
 
     $scope.goal = function () {
       $.ajax({
-        url: location.protocol + '//' + window.location.host + '/game/' + gameId + '/chaser/goal/123',
+        url: uri + '/game/' + gameId + '/chaser/goal/123',
         type: 'POST',
         data: JSON.stringify({ chaser: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -145,7 +144,7 @@ angular // eslint-disable-line
 
     $scope.miss = function () {
       $.ajax({
-        url: location.protocol + '//' + window.location.host + '/game/' + gameId + '/chaser/miss/123',
+        url: uri + '/game/' + gameId + '/chaser/miss/123',
         type: 'POST',
         data: JSON.stringify({ chaser: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -168,7 +167,7 @@ angular // eslint-disable-line
 
     $scope.block = function () {
       $.ajax({
-        url: location.protocol + '//' + window.location.host + '/game/' + gameId + '/keeper/block/123',
+        url: uri + '/game/' + gameId + '/keeper/block/123',
         type: 'POST',
         data: JSON.stringify({ keeper: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -191,7 +190,7 @@ angular // eslint-disable-line
 
     $scope.end = function () {
       $.ajax({
-        url: location.protocol + '//' + window.location.host + '/game/' + gameId + '/seeker/catchSnitch/123',
+        url: uri + '/game/' + gameId + '/seeker/catchSnitch/123',
         type: 'POST',
         data: JSON.stringify({ seeker: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -214,7 +213,7 @@ angular // eslint-disable-line
 
     $scope.snitchAppeared = function () {
       $.ajax({
-        url: location.protocol + '//' + window.location.host + '/game/' + gameId + '/snitch/appeared/123',
+        url: uri + '/game/' + gameId + '/snitch/appeared/123',
         type: 'POST',
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
@@ -313,6 +312,7 @@ angular.module('playbyplay').component('playbyplay', {
     });
 
     var host = '';
+    var wsUri = uri.split('://');
 
     if (location.protocol === 'http:') {
       host = 'ws:';
@@ -320,7 +320,7 @@ angular.module('playbyplay').component('playbyplay', {
       host = 'wss:';
     }
 
-    var ws = new WebSocket(host + '//' + window.location.host + '/');
+    var ws = new WebSocket(host + '//' + wsUri[1] + '/');
 
     ws.onmessage = function (evt) {
       var play = JSON.parse(evt.data);
@@ -346,6 +346,7 @@ angular.module('playbyplay').component('playbyplay', {
             break;
           default:
         }
+        $scope.$apply();
       }
     };
   }]
