@@ -3,6 +3,7 @@ import express from 'express'
 import fs from 'fs'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import Team from '../dist/models/Team'
 import Player from '../dist/models/Player'
 import Snitch from '../dist/models/Snitch'
@@ -16,6 +17,7 @@ const socket = new WebSocketServer({ server })
 app.use(bodyParser.json())
 mongoose.Promise = Promise
 app.use(express.static('public'))
+app.use(cors())
 
 // =============== TOKENS
 

@@ -12,11 +12,13 @@
         Apache Cordova Team
     </author>
     <content src="index.html" />
-    <access origin="*" />
-    <allow-navigation href="https://*/*" />
-    <allow-navigation href="wss://*/*" />
+    <access origin="https://rave-quidditch.herokuapp.com/*" />
+    <access origin="*" subdomains="true" />
+    <allow-navigation href="https://rave-quidditch.herokuapp.com/*/*" />
+    <allow-navigation href="wss://rave-quidditch.herokuapp.com/*/*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
+    <allow-intent href="wss://*/*" />
     <allow-intent href="tel:*" />
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
