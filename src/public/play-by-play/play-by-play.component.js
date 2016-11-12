@@ -9,7 +9,15 @@ angular
   controller: ['$routeParams', '$http', '$scope',
     ($routeParams, $http, $scope) => {
       const gameId = $routeParams.gameId
-      $http.get(`/game/find/${gameId}`)
+      let uri = ''
+
+      if (window.cordova) {
+        uri = process.env.DARK_MAGIC
+      } else {
+        uri = window.location.origin
+      }
+
+      $http.get(`${uri}/game/find/${gameId}`)
         .success((data) => {
           data.playHistory.forEach((play) => {
             play.time = new Date(play.time).toLocaleString()

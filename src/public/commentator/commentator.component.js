@@ -12,7 +12,15 @@ angular // eslint-disable-line
       let currentPlayer
       $scope.selectedState = false
 
-      $http.get(`/game/find/${gameId}`)
+      let uri = ''
+
+      if (window.cordova) {
+        uri = process.env.DARK_MAGIC
+      } else {
+        uri = window.location.origin
+      }
+
+      $http.get(`${uri}/game/find/${gameId}`)
         .success((data) => {
           if (data.snitch.caughtOn !== undefined) {
             data.snitch.caughtOn = new Date(data.snitch.caughtOn).toLocaleString()
@@ -20,7 +28,7 @@ angular // eslint-disable-line
           $scope.game = data
           $scope.teams = []
           data.teams.forEach((team) => {
-            $http.get(`/team/find/${team._id}`) // eslint-disable-line
+            $http.get(`${uri}/team/find/${team._id}`) // eslint-disable-line
             .success((teamData) => {
               $scope.teams.push(teamData)
             })

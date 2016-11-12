@@ -11,10 +11,18 @@ angular
       const gameId = $routeParams.gameId
       $scope.teams = []
 
-      $http.get(`/game/find/${gameId}`)
+      let uri = ''
+
+      if (window.cordova) {
+        uri = process.env.DARK_MAGIC
+      } else {
+        uri = window.location.origin
+      }
+
+      $http.get(`${uri}/game/find/${gameId}`)
         .success((data) => {
           data.teams.forEach((team) => {
-            $http.get(`/team/find/${team._id}`) // eslint-disable-line
+            $http.get(`${uri}/team/find/${team._id}`) // eslint-disable-line
             .success((teamData) => {
               $scope.teams.push(teamData)
             })
