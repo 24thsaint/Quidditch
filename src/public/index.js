@@ -10,4 +10,5 @@ import './box-score/box-score.module'
 import './box-score/box-score.component'
 import './play-by-play/play-by-play.module'
 import './play-by-play/play-by-play.component'
-
+import './login/login.module'
+import './login/login.component'

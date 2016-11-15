@@ -7,4 +7,5 @@ angular.module('app', [
   'home',
   'box',
   'playbyplay',
+  'login',
 ])

@@ -54,6 +54,11 @@ function sendPlayByPlaySocketResponse(response) {
 
 // ================ REST stuff
 
+app.post('/user/login', (request, response) => {
+  const user = request.body
+  response.end(`READ: ${user.username}`)
+})
+
 app.get('/games/list', (request, response) => {
   Game.find({}).populate('teams snitch').exec()
   .then((games) => {
