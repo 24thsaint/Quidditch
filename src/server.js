@@ -26,7 +26,6 @@ app.use(cors())
 
 // =============== TOKENS
 
-const tokens = ['123']
 const clientTokens = {}
 
 function generateToken(user) {
@@ -186,12 +185,12 @@ app.get('/team/find/:id', (request, response) => {
   })
 })
 
-app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
-  const token = request.params.token
+app.post('/game/:gameId/chaser/goal', (request, response) => {
+  const token = request.cookies.token
   const gameId = request.params.gameId
   const jsonRequest = request.body
 
-  if (tokens.includes(token)) {
+  if (clientTokens[token] !== undefined) {
     response.writeHead(200, { 'Content-Type': 'application/json' })
 
     if (jsonRequest.chaser === undefined) {
@@ -241,12 +240,12 @@ app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
   }
 })
 
-app.post('/game/:gameId/chaser/miss/:token', (request, response) => {
-  const token = request.params.token
+app.post('/game/:gameId/chaser/miss', (request, response) => {
+  const token = request.cookies.token
   const gameId = request.params.gameId
   const jsonRequest = request.body
 
-  if (tokens.includes(token)) {
+  if (clientTokens[token] !== undefined) {
     response.writeHead(200, { 'Content-Type': 'application/json' })
 
     if (jsonRequest.chaser === undefined) {
@@ -288,12 +287,12 @@ app.post('/game/:gameId/chaser/miss/:token', (request, response) => {
   }
 })
 
-app.post('/game/:gameId/keeper/block/:token', (request, response) => {
-  const token = request.params.token
+app.post('/game/:gameId/keeper/block', (request, response) => {
+  const token = request.cookies.token
   const gameId = request.params.gameId
   const jsonRequest = request.body
 
-  if (tokens.includes(token)) {
+  if (clientTokens[token] !== undefined) {
     response.writeHead(200, { 'Content-Type': 'application/json' })
 
     if (jsonRequest.keeper === undefined) {
@@ -335,12 +334,12 @@ app.post('/game/:gameId/keeper/block/:token', (request, response) => {
   }
 })
 
-app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
-  const token = request.params.token
+app.post('/game/:gameId/seeker/catchSnitch', (request, response) => {
+  const token = request.cookies.token
   const gameId = request.params.gameId
   const jsonRequest = request.body
 
-  if (tokens.includes(token)) {
+  if (clientTokens[token] !== undefined) {
     if (jsonRequest.seeker === undefined) {
       response.end(JSON.stringify({ status: 'FAIL', message: 'Player not found' }))
     }
@@ -398,11 +397,11 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
   }
 })
 
-app.post('/game/:gameId/snitch/appeared/:token', (request, response) => {
-  const token = request.params.token
+app.post('/game/:gameId/snitch/appeared', (request, response) => {
+  const token = request.cookies.token
   const gameId = request.params.gameId
 
-  if (tokens.includes(token)) {
+  if (clientTokens[token] !== undefined) {
     Game.findOne({ _id: gameId }).populate('snitch').exec()
     .then((game) => {
       const socketResponse = game.snitchAppeared()
@@ -429,11 +428,11 @@ app.post('/game/:gameId/snitch/appeared/:token', (request, response) => {
 })
 
 
-app.post('/game/start/:token', (request, response) => {
-  const token = request.params.token
+app.post('/game/start', (request, response) => {
+  const token = request.cookies.token
   const jsonRequest = request.body
 
-  if (tokens.includes(token)) {
+  if (clientTokens[token] !== undefined) {
     const snitch = new Snitch()
     snitch.save()
     .then(() => {

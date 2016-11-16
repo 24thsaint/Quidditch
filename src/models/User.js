@@ -14,8 +14,7 @@ class User extends Model {
   encryptPassword() {
     const salt = bcrypt.genSaltSync()
     const hash = bcrypt.hashSync(this.password, salt)
-    this.password = hash //eslint-disable-line
-    console.log(hash)
+    this.password = hash //eslint-disable-line    
   }
 
 }

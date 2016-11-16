@@ -46,7 +46,7 @@ angular // eslint-disable-line
 
       $scope.goal = () => {
         $.ajax({
-          url: `${uri}/game/${gameId}/chaser/goal/123`,
+          url: `${uri}/game/${gameId}/chaser/goal`,
           type: 'POST',
           data: JSON.stringify({ chaser: currentPlayer }),
           contentType: 'application/json; charset=utf-8',
@@ -70,7 +70,7 @@ angular // eslint-disable-line
 
       $scope.miss = () => {
         $.ajax({
-          url: `${uri}/game/${gameId}/chaser/miss/123`,
+          url: `${uri}/game/${gameId}/chaser/miss`,
           type: 'POST',
           data: JSON.stringify({ chaser: currentPlayer }),
           contentType: 'application/json; charset=utf-8',
@@ -93,7 +93,7 @@ angular // eslint-disable-line
 
       $scope.block = () => {
         $.ajax({
-          url: `${uri}/game/${gameId}/keeper/block/123`,
+          url: `${uri}/game/${gameId}/keeper/block`,
           type: 'POST',
           data: JSON.stringify({ keeper: currentPlayer }),
           contentType: 'application/json; charset=utf-8',
@@ -116,7 +116,7 @@ angular // eslint-disable-line
 
       $scope.end = () => {
         $.ajax({
-          url: `${uri}/game/${gameId}/seeker/catchSnitch/123`,
+          url: `${uri}/game/${gameId}/seeker/catchSnitch`,
           type: 'POST',
           data: JSON.stringify({ seeker: currentPlayer }),
           contentType: 'application/json; charset=utf-8',
@@ -139,7 +139,7 @@ angular // eslint-disable-line
 
       $scope.snitchAppeared = () => {
         $.ajax({
-          url: `${uri}/game/${gameId}/snitch/appeared/123`,
+          url: `${uri}/game/${gameId}/snitch/appeared`,
           type: 'POST',
           contentType: 'application/json; charset=utf-8',
           dataType: 'json',
