@@ -4,23 +4,43 @@
   </div>
   <br />
   <div class="well text-center">
-    <h1>Games</h1>
+    <h1><h1><span class="glyphicon glyphicon-flash"></span> Games</h1>
   </div>
 </div>
 
-<div class="col-md-6">
+<div class="col-md-1"></div>
+<div class="col-md-10">
   <ul class="list-group">
-    <li ng-repeat="game in games">
-        {{ game.teams[0].name }} <b>vs</b> {{ game.teams[1].name }}
-        <span ng-if="game.snitch.caughtOn !== undefined" class="label label-success">GAME ENDED</span>
+    <li class="list-group-item" ng-repeat="game in games">
+      <span ng-if="game.snitch.caughtOn !== undefined" class="label label-success">
+        <span class="glyphicon glyphicon-alert"></span> GAME ENDED
+      </span>
+      <span class="lead">{{ game.teams[0].name }}</span> vs <span class="lead">{{ game.teams[1].name }}</span>
+      <br />
+      <br />
+      <div class="list-group">
+        <span ng-if="validCommentator">
+          <div class="col-md-4 text-center">
+            <a class="{{ game.snitch.caughtOn !== undefined ? 'list-group-item list-group-item-danger' : 'list-group-item list-group-item-info' }}" href="#/game/{{ game._id }}">
+              <span class="{{ game.snitch.caughtOn !== undefined ? 'glyphicon glyphicon-alert' : 'glyphicon glyphicon-pencil' }}"></span> Commentator Area
+            </a>
+          </div>
+        </span>
 
-        <div class="list-group">
-          <span ng-if="validCommentator">
-            <a class="{{ game.snitch.caughtOn !== undefined ? 'list-group-item list-group-item-success' : 'list-group-item list-group-item-info' }}" href="#/game/{{ game._id }}">Commentator Area</a>
-          </span>
-          <a class="list-group-item" href="#/game/{{ game._id }}/box-score">BOX SCORE STATS</a>
-          <a class="list-group-item" href="#/game/{{ game._id }}/play-by-play">PLAY BY PLAY</a>
+        <div class="col-md-4 text-center">
+          <a class="list-group-item" href="#/game/{{ game._id }}/box-score">
+            <span class="glyphicon glyphicon-th-large"></span> BOX SCORE STATS
+          </a>
         </div>
+        <div class="col-md-4 text-center">
+          <a class="list-group-item" href="#/game/{{ game._id }}/play-by-play">
+            <span class="glyphicon glyphicon-list"></span> PLAY BY PLAY
+          </a>
+        </div>
+      </div>
+      <br />
+      <br />
     </li>
   </ul>
 </div>
+<div class="col-md-1"></div>
