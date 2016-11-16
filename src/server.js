@@ -90,9 +90,9 @@ app.post('/user/login', (request, response) => {
     })
 })
 
-app.get('/user/verify', (request, response) => {
+app.get('/user/verify/:token', (request, response) => {
   let jsonResponse
-  const valid = clientTokens[request.cookies.token]
+  const valid = clientTokens[request.params.token]
   if (valid) {
     jsonResponse = Object.assign({}, valid)
     delete jsonResponse.password
@@ -185,8 +185,8 @@ app.get('/team/find/:id', (request, response) => {
   })
 })
 
-app.post('/game/:gameId/chaser/goal', (request, response) => {
-  const token = request.cookies.token
+app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
+  const token = request.params.token
   const gameId = request.params.gameId
   const jsonRequest = request.body
 
@@ -240,8 +240,8 @@ app.post('/game/:gameId/chaser/goal', (request, response) => {
   }
 })
 
-app.post('/game/:gameId/chaser/miss', (request, response) => {
-  const token = request.cookies.token
+app.post('/game/:gameId/chaser/miss/:token', (request, response) => {
+  const token = request.params.token
   const gameId = request.params.gameId
   const jsonRequest = request.body
 
@@ -287,8 +287,8 @@ app.post('/game/:gameId/chaser/miss', (request, response) => {
   }
 })
 
-app.post('/game/:gameId/keeper/block', (request, response) => {
-  const token = request.cookies.token
+app.post('/game/:gameId/keeper/block/:token', (request, response) => {
+  const token = request.params.token
   const gameId = request.params.gameId
   const jsonRequest = request.body
 
@@ -334,8 +334,8 @@ app.post('/game/:gameId/keeper/block', (request, response) => {
   }
 })
 
-app.post('/game/:gameId/seeker/catchSnitch', (request, response) => {
-  const token = request.cookies.token
+app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
+  const token = request.params.token
   const gameId = request.params.gameId
   const jsonRequest = request.body
 
@@ -397,8 +397,8 @@ app.post('/game/:gameId/seeker/catchSnitch', (request, response) => {
   }
 })
 
-app.post('/game/:gameId/snitch/appeared', (request, response) => {
-  const token = request.cookies.token
+app.post('/game/:gameId/snitch/appeared/:token', (request, response) => {
+  const token = request.params.token
   const gameId = request.params.gameId
 
   if (clientTokens[token] !== undefined) {
@@ -428,8 +428,8 @@ app.post('/game/:gameId/snitch/appeared', (request, response) => {
 })
 
 
-app.post('/game/start', (request, response) => {
-  const token = request.cookies.token
+app.post('/game/start/:token', (request, response) => {
+  const token = request.params.token
   const jsonRequest = request.body
 
   if (clientTokens[token] !== undefined) {

@@ -5,13 +5,15 @@
 
 angular.module('app').config(['$locationProvider', '$routeProvider', function config($locationProvider, $routeProvider) {
   $routeProvider.when('/', {
-    template: '<home></home>'
+    template: '<home>Loading...</home>'
   }).when('/game/:gameId', {
-    template: '<commentator></commentator>'
+    template: '<commentator>Loading...</commentator>'
   }).when('/game/:gameId/box-score', {
-    template: '<box></box>'
+    template: '<box>Loading...</box>'
   }).when('/game/:gameId/play-by-play', {
-    template: '<playbyplay></playbyplay>'
+    template: '<playbyplay>Loading...</playbyplay>'
+  }).when('/login', {
+    template: '<login>Loading...</login>'
   }).otherwise('/');
 }]);
 
@@ -21,7 +23,7 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function co
 /* eslint-env browser */
 /* global $, angular */
 
-angular.module('app', ['ngRoute', 'commentator', 'home', 'box', 'playbyplay']);
+angular.module('app', ['ngRoute', 'commentator', 'home', 'box', 'playbyplay', 'login']);
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -104,6 +106,12 @@ angular // eslint-disable-line
       uri = window.location.origin;
     }
 
+    $http.get(uri + '/user/verify').success(function (data) {
+      if (data.status === 'FAIL') {
+        window.location.href = uri;
+      }
+    });
+
     $http.get(uri + '/game/find/' + gameId).success(function (data) {
       if (data.snitch.caughtOn !== undefined) {
         data.snitch.caughtOn = new Date(data.snitch.caughtOn).toLocaleString();
@@ -120,7 +128,7 @@ angular // eslint-disable-line
 
     $scope.goal = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/chaser/goal/123',
+        url: uri + '/game/' + gameId + '/chaser/goal',
         type: 'POST',
         data: JSON.stringify({ chaser: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -144,7 +152,7 @@ angular // eslint-disable-line
 
     $scope.miss = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/chaser/miss/123',
+        url: uri + '/game/' + gameId + '/chaser/miss',
         type: 'POST',
         data: JSON.stringify({ chaser: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -167,7 +175,7 @@ angular // eslint-disable-line
 
     $scope.block = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/keeper/block/123',
+        url: uri + '/game/' + gameId + '/keeper/block',
         type: 'POST',
         data: JSON.stringify({ keeper: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -190,7 +198,7 @@ angular // eslint-disable-line
 
     $scope.end = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/seeker/catchSnitch/123',
+        url: uri + '/game/' + gameId + '/seeker/catchSnitch',
         type: 'POST',
         data: JSON.stringify({ seeker: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -213,7 +221,7 @@ angular // eslint-disable-line
 
     $scope.snitchAppeared = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/snitch/appeared/123',
+        url: uri + '/game/' + gameId + '/snitch/appeared',
         type: 'POST',
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
@@ -257,12 +265,21 @@ angular.module('home').component('home', {
   templateUrl: 'templates/home-template.html',
   controller: ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
     var uri = '';
+    $scope.validCommentator = false;
 
     if (window.cordova) {
       uri = "https://rave-quidditch.herokuapp.com";
     } else {
       uri = window.location.origin;
     }
+
+    $http.get(uri + '/user/verify').success(function (data) {
+      if (data.status === 'FAIL') {
+        $scope.validCommentator = false;
+      } else {
+        $scope.validCommentator = true;
+      }
+    });
 
     $http.get(uri + '/games/list').success(function (data) {
       $scope.games = data;
@@ -281,6 +298,68 @@ angular.module('home').component('home', {
 angular.module('home', ['ngRoute']);
 
 },{}],9:[function(require,module,exports){
+'use strict';
+
+/* eslint-env browser */
+/* global $, angular */
+/* eslint-disable no-param-reassign */
+
+angular.module('login').component('login', {
+  templateUrl: 'templates/login.html',
+  controller: ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
+    $scope.credential = {};
+    $scope.validCommentator = false;
+    $scope.error = '';
+    $scope.isLoginFailed = false;
+
+    var uri = '';
+
+    if (window.cordova) {
+      uri = "https://rave-quidditch.herokuapp.com";
+    } else {
+      uri = window.location.origin;
+    }
+
+    $http.get(uri + '/user/verify').success(function (data) {
+      if (data.status === 'FAIL') {
+        $scope.validCommentator = false;
+      } else {
+        $scope.validCommentator = true;
+      }
+    });
+
+    $scope.submit = function () {
+      $http.post(uri + '/user/login', $scope.credential).success(function (data) {
+        // document.cookie = `token=${data.token}`
+        window.localStorage.cookie = data.token;
+
+        console.log('=================================');
+        console.log(window.localStorage.cookie);
+        console.log('=================================');
+
+        if (data.status === 'OK') {
+          $scope.validCommentator = true;
+        } else {
+          $scope.error = data.message;
+          $scope.isLoginFailed = true;
+        }
+      }).error(function (error) {
+        $scope.error = error.message;
+        $scope.loginFailed = true;
+      });
+    };
+  }]
+});
+
+},{}],10:[function(require,module,exports){
+'use strict';
+
+/* eslint-env browser */
+/* global angular */
+
+angular.module('login', ['ngRoute']);
+
+},{}],11:[function(require,module,exports){
 'use strict';
 
 /* eslint-env browser */
@@ -349,7 +428,7 @@ angular.module('playbyplay').component('playbyplay', {
   }]
 });
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 /* eslint-env browser */
@@ -357,7 +436,7 @@ angular.module('playbyplay').component('playbyplay', {
 
 angular.module('playbyplay', ['ngRoute']);
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var _angular = require('angular');
@@ -386,11 +465,15 @@ require('./play-by-play/play-by-play.module');
 
 require('./play-by-play/play-by-play.component');
 
+require('./login/login.module');
+
+require('./login/login.component');
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
 
-},{"./app.config":1,"./app.module":2,"./box-score/box-score.component":3,"./box-score/box-score.module":4,"./commentator/commentator.component":5,"./commentator/commentator.module":6,"./home/home.component":7,"./home/home.module":8,"./play-by-play/play-by-play.component":9,"./play-by-play/play-by-play.module":10,"angular":15,"angular-route":13}],12:[function(require,module,exports){
+},{"./app.config":1,"./app.module":2,"./box-score/box-score.component":3,"./box-score/box-score.module":4,"./commentator/commentator.component":5,"./commentator/commentator.module":6,"./home/home.component":7,"./home/home.module":8,"./login/login.component":9,"./login/login.module":10,"./play-by-play/play-by-play.component":11,"./play-by-play/play-by-play.module":12,"angular":17,"angular-route":15}],14:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -1461,11 +1544,11 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 require('./angular-route');
 module.exports = 'ngRoute';
 
-},{"./angular-route":12}],14:[function(require,module,exports){
+},{"./angular-route":14}],16:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -33234,8 +33317,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":14}]},{},[11]);
+},{"./angular":16}]},{},[13]);

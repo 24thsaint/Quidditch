@@ -21,7 +21,7 @@ angular // eslint-disable-line
       }
 
       $http.get(
-        `${uri}/user/verify`,
+        `${uri}/user/verify/${window.localStorage.token}`,
       )
       .success((data) => {
         if (data.status === 'FAIL') {
@@ -46,7 +46,7 @@ angular // eslint-disable-line
 
       $scope.goal = () => {
         $.ajax({
-          url: `${uri}/game/${gameId}/chaser/goal`,
+          url: `${uri}/game/${gameId}/chaser/goal/${window.localStorage.token}`,
           type: 'POST',
           data: JSON.stringify({ chaser: currentPlayer }),
           contentType: 'application/json; charset=utf-8',
@@ -70,7 +70,7 @@ angular // eslint-disable-line
 
       $scope.miss = () => {
         $.ajax({
-          url: `${uri}/game/${gameId}/chaser/miss`,
+          url: `${uri}/game/${gameId}/chaser/miss/${window.localStorage.token}`,
           type: 'POST',
           data: JSON.stringify({ chaser: currentPlayer }),
           contentType: 'application/json; charset=utf-8',
@@ -93,7 +93,7 @@ angular // eslint-disable-line
 
       $scope.block = () => {
         $.ajax({
-          url: `${uri}/game/${gameId}/keeper/block`,
+          url: `${uri}/game/${gameId}/keeper/block/${window.localStorage.token}`,
           type: 'POST',
           data: JSON.stringify({ keeper: currentPlayer }),
           contentType: 'application/json; charset=utf-8',
@@ -116,7 +116,7 @@ angular // eslint-disable-line
 
       $scope.end = () => {
         $.ajax({
-          url: `${uri}/game/${gameId}/seeker/catchSnitch`,
+          url: `${uri}/game/${gameId}/seeker/catchSnitch/${window.localStorage.token}`,
           type: 'POST',
           data: JSON.stringify({ seeker: currentPlayer }),
           contentType: 'application/json; charset=utf-8',
@@ -139,7 +139,7 @@ angular // eslint-disable-line
 
       $scope.snitchAppeared = () => {
         $.ajax({
-          url: `${uri}/game/${gameId}/snitch/appeared`,
+          url: `${uri}/game/${gameId}/snitch/appeared/${window.localStorage.token}`,
           type: 'POST',
           contentType: 'application/json; charset=utf-8',
           dataType: 'json',

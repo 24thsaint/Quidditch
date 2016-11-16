@@ -22,7 +22,7 @@ angular
         }
 
         $http.get(
-          `${uri}/user/verify`,
+          `${uri}/user/verify/${window.localStorage.token}`,
         )
         .success((data) => {
           if (data.status === 'FAIL') {
@@ -38,7 +38,9 @@ angular
             $scope.credential,
           )
           .success((data) => {
-            document.cookie = `token=${data.token}`
+            // document.cookie = `token=${data.token}`
+            window.localStorage.token = data.token
+
             if (data.status === 'OK') {
               $scope.validCommentator = true
             } else {

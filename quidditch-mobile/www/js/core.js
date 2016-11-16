@@ -18,7 +18,12 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function co
 }]);
 
 },{}],2:[function(require,module,exports){
-"use strict";
+'use strict';
+
+/* eslint-env browser */
+/* global $, angular */
+
+angular.module('app', ['ngRoute', 'commentator', 'home', 'box', 'playbyplay', 'login']);
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -101,6 +106,12 @@ angular // eslint-disable-line
       uri = window.location.origin;
     }
 
+    $http.get(uri + '/user/verify/' + window.localStorage.token).success(function (data) {
+      if (data.status === 'FAIL') {
+        window.location.href = uri;
+      }
+    });
+
     $http.get(uri + '/game/find/' + gameId).success(function (data) {
       if (data.snitch.caughtOn !== undefined) {
         data.snitch.caughtOn = new Date(data.snitch.caughtOn).toLocaleString();
@@ -117,7 +128,7 @@ angular // eslint-disable-line
 
     $scope.goal = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/chaser/goal/123',
+        url: uri + '/game/' + gameId + '/chaser/goal/' + window.localStorage.token,
         type: 'POST',
         data: JSON.stringify({ chaser: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -141,7 +152,7 @@ angular // eslint-disable-line
 
     $scope.miss = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/chaser/miss/123',
+        url: uri + '/game/' + gameId + '/chaser/miss/' + window.localStorage.token,
         type: 'POST',
         data: JSON.stringify({ chaser: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -164,7 +175,7 @@ angular // eslint-disable-line
 
     $scope.block = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/keeper/block/123',
+        url: uri + '/game/' + gameId + '/keeper/block/' + window.localStorage.token,
         type: 'POST',
         data: JSON.stringify({ keeper: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -187,7 +198,7 @@ angular // eslint-disable-line
 
     $scope.end = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/seeker/catchSnitch/123',
+        url: uri + '/game/' + gameId + '/seeker/catchSnitch/' + window.localStorage.token,
         type: 'POST',
         data: JSON.stringify({ seeker: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -210,7 +221,7 @@ angular // eslint-disable-line
 
     $scope.snitchAppeared = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/snitch/appeared/123',
+        url: uri + '/game/' + gameId + '/snitch/appeared/' + window.localStorage.token,
         type: 'POST',
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
@@ -254,12 +265,21 @@ angular.module('home').component('home', {
   templateUrl: 'templates/home-template.html',
   controller: ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
     var uri = '';
+    $scope.validCommentator = false;
 
     if (window.cordova) {
       uri = "https://rave-quidditch.herokuapp.com";
     } else {
       uri = window.location.origin;
     }
+
+    $http.get(uri + '/user/verify/' + window.localStorage.token).success(function (data) {
+      if (data.status === 'FAIL') {
+        $scope.validCommentator = false;
+      } else {
+        $scope.validCommentator = true;
+      }
+    });
 
     $http.get(uri + '/games/list').success(function (data) {
       $scope.games = data;
@@ -288,6 +308,9 @@ angular.module('login').component('login', {
   templateUrl: 'templates/login.html',
   controller: ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
     $scope.credential = {};
+    $scope.validCommentator = false;
+    $scope.error = '';
+    $scope.isLoginFailed = false;
 
     var uri = '';
 
@@ -297,12 +320,28 @@ angular.module('login').component('login', {
       uri = window.location.origin;
     }
 
+    $http.get(uri + '/user/verify/' + window.localStorage.token).success(function (data) {
+      if (data.status === 'FAIL') {
+        $scope.validCommentator = false;
+      } else {
+        $scope.validCommentator = true;
+      }
+    });
+
     $scope.submit = function () {
       $http.post(uri + '/user/login', $scope.credential).success(function (data) {
-        document.cookie = 'token=' + data.token;
-        window.location.href = '/#/login/success';
-      }).error(function () {
-        window.location.href = '/#/login/fail';
+        // document.cookie = `token=${data.token}`
+        window.localStorage.token = data.token;
+
+        if (data.status === 'OK') {
+          $scope.validCommentator = true;
+        } else {
+          $scope.error = data.message;
+          $scope.isLoginFailed = true;
+        }
+      }).error(function (error) {
+        $scope.error = error.message;
+        $scope.loginFailed = true;
       });
     };
   }]

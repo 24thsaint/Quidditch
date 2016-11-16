@@ -18,7 +18,7 @@ angular
         }
 
         $http.get(
-          `${uri}/user/verify`,
+          `${uri}/user/verify/${window.localStorage.token}`,
         )
         .success((data) => {
           if (data.status === 'FAIL') {
