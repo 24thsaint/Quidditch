@@ -18,12 +18,7 @@ angular.module('app').config(['$locationProvider', '$routeProvider', function co
 }]);
 
 },{}],2:[function(require,module,exports){
-'use strict';
-
-/* eslint-env browser */
-/* global $, angular */
-
-angular.module('app', ['ngRoute', 'commentator', 'home', 'box', 'playbyplay', 'login']);
+"use strict";
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -304,9 +299,10 @@ angular.module('login').component('login', {
 
     $scope.submit = function () {
       $http.post(uri + '/user/login', $scope.credential).success(function (data) {
-        console.log(data);
-      }).error(function (data) {
-        console.log(data);
+        document.cookie = 'token=' + data.token;
+        window.location.href = '/#/login/success';
+      }).error(function () {
+        window.location.href = '/#/login/fail';
       });
     };
   }]

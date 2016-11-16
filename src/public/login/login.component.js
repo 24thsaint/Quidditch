@@ -9,6 +9,9 @@ angular
     controller: ['$routeParams', '$http', '$scope',
       ($routeParams, $http, $scope) => {
         $scope.credential = {}
+        $scope.hasUser = false
+        $scope.error = ''
+        $scope.isLoginFailed = false
 
         let uri = ''
 
@@ -24,10 +27,17 @@ angular
             $scope.credential,
           )
           .success((data) => {
-            console.log(data)
+            document.cookie = `token=${data.token}`
+            if (data.status === 'OK') {
+              $scope.hasUser = true
+            } else {
+              $scope.error = data.message
+              $scope.isLoginFailed = true
+            }
           })
-          .error((data) => {
-            console.log(data)
+          .error((error) => {
+            $scope.error = error.message
+            $scope.loginFailed = true
           })
         }
       },

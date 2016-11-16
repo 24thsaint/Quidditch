@@ -3,11 +3,15 @@ import express from 'express'
 import fs from 'fs'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
+import bcrypt from 'bcrypt'
 import cors from 'cors'
+import sha256 from 'sha256'
 import Team from '../dist/models/Team'
 import Player from '../dist/models/Player'
 import Snitch from '../dist/models/Snitch'
 import Game from '../dist/models/Game'
+import User from '../dist/models/User'
 
 const WebSocketServer = require('ws').Server
 
@@ -15,6 +19,7 @@ const server = http.createServer()
 const app = express()
 const socket = new WebSocketServer({ server })
 app.use(bodyParser.json())
+app.use(cookieParser())
 mongoose.Promise = Promise
 app.use(express.static('public'))
 app.use(cors())
@@ -22,6 +27,12 @@ app.use(cors())
 // =============== TOKENS
 
 const tokens = ['123']
+
+function generateToken(user) {
+  const token = sha256(user._id + new Date().getTime()) // eslint-disable-line
+  tokens.push({ token: user })
+  return token
+}
 
 // =============== VIEWS
 
@@ -55,8 +66,28 @@ function sendPlayByPlaySocketResponse(response) {
 // ================ REST stuff
 
 app.post('/user/login', (request, response) => {
-  const user = request.body
-  response.end(`READ: ${user.username}`)
+  const auth = request.body
+  User.findOne({ username: auth.username }).exec()
+    .then((user) => {
+      const isAuthorized = bcrypt.compareSync(auth.password, user.password)
+      if (isAuthorized) {
+        response.end(JSON.stringify({
+          status: 'OK',
+          token: generateToken(user),
+        }))
+      } else {
+        response.end(JSON.stringify({
+          status: 'FAIL',
+          message: 'INVALID PASSWORD',
+        }))
+      }
+    })
+    .catch((err) => {
+      response.end(JSON.stringify({
+        status: 'FAIL',
+        message: err.message,
+      }))
+    })
 })
 
 app.get('/games/list', (request, response) => {

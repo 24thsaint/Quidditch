@@ -4,6 +4,17 @@ import Player from './dist/models/Player'
 import Game from './dist/models/Game'
 import Team from './dist/models/Team'
 import Snitch from './dist/models/Snitch'
+import User from './dist/models/User'
+
+const user = new User({
+  username: 'rave',
+  password: '123',
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
+})
+
+user.encryptPassword()
+user.save()
 
 const teams = []
 
