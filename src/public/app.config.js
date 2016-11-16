@@ -6,19 +6,19 @@ angular
     function config($locationProvider, $routeProvider) {
       $routeProvider
         .when('/', {
-          template: '<home>Loading...</home>',
+          template: '<home></home>',
         })
         .when('/game/:gameId', {
-          template: '<commentator>Loading...</commentator>',
+          template: '<commentator></commentator>',
         })
         .when('/game/:gameId/box-score', {
-          template: '<box>Loading...</box>',
+          template: '<box></box>',
         })
         .when('/game/:gameId/play-by-play', {
-          template: '<playbyplay>Loading...</playbyplay>',
+          template: '<playbyplay></playbyplay>',
         })
         .when('/login', {
-          template: '<login>Loading...</login>',
+          template: '<login></login>',
         })
         .otherwise('/')
     },

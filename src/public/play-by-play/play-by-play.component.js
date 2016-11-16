@@ -45,27 +45,27 @@ angular
           switch (play.eventType) {
             case 'start' :
               $('#plays > tbody:last-child')
-                .append(`<tr><td class="bg-danger">${new Date(play.time).toLocaleString()} - GAME HAS STARTED!</td></tr>`)
+                .append(`<tr><td class="bg-danger"><span class="lead">${new Date(play.time).toLocaleString()}</span> - GAME HAS STARTED!</td></tr>`)
               break
             case 'end' :
               $('#plays > tbody:last-child')
-                .append(`<tr><td class="bg-danger">${new Date(play.time).toLocaleString()} - Snitch caught by ${play.player.firstName} ${play.player.lastName}. GAME HAS ENDED!</td></tr>`)
+                .append(`<tr><td class="bg-danger"><span class="lead">${new Date(play.time).toLocaleString()}</span> - Snitch caught by ${play.player.firstName} ${play.player.lastName}. GAME HAS ENDED!</td></tr>`)
               break
             case 'goal' :
               $('#plays > tbody:last-child')
-                .append(`<tr><td class="bg-success">${new Date(play.time).toLocaleString()} - Goal made by ${play.player.firstName} ${play.player.lastName}</td></tr>`)
+                .append(`<tr><td class="bg-success"><span class="lead">${new Date(play.time).toLocaleString()}</span> - Goal made by ${play.player.firstName} ${play.player.lastName}</td></tr>`)
               break
             case 'miss' :
               $('#plays > tbody:last-child')
-                .append(`<tr><td class="bg-warning">${new Date(play.time).toLocaleString()} - Goal missed by ${play.player.firstName} ${play.player.lastName}</td></tr>`)
+                .append(`<tr><td class="bg-warning"><span class="lead">${new Date(play.time).toLocaleString()}</span> - Goal missed by ${play.player.firstName} ${play.player.lastName}</td></tr>`)
               break
             case 'block' :
               $('#plays > tbody:last-child')
-                .append(`<tr><td class="bg-info">${new Date(play.time).toLocaleString()} - Goal attempt blocked by ${play.player.firstName} ${play.player.lastName}</td></tr>`)
+                .append(`<tr><td class="bg-info"><span class="lead">${new Date(play.time).toLocaleString()}</span> - Goal attempt blocked by ${play.player.firstName} ${play.player.lastName}</td></tr>`)
               break
             case 'snitchAppears' :
               $('#plays > tbody:last-child')
-                .append(`<tr><td class="bg-primary">${new Date(play.time).toLocaleString()} - SNITCH HAS APPEARED!</td></tr>`)
+                .append(`<tr><td class="bg-primary"><span class="lead">${new Date(play.time).toLocaleString()}</span> - SNITCH HAS APPEARED!</td></tr>`)
               break
             default:
           }

@@ -1,6 +1,6 @@
 <div class="col-md-12 text-center">
   <div class="well">
-    <h1>Commentator Login</h1>
+    <h1><span class="glyphicon glyphicon-lock"></span> Commentator Login</h1>
   </div>
 </div>
 
@@ -8,27 +8,39 @@
 <div class="col-md-4">
   <div ng-if="!validCommentator">
     <div ng-if="isLoginFailed" class="alert alert-danger text-center">
-      {{ error }}
+      <span class="glyphicon glyphicon-alert"></span> {{ error }}
     </div>
 
     <form class="form" ng-submit="submit()">
       <div class="form-group">
         <label for="username">Username</label>
-        <input type="text" class="form-control" ng-model="credential.username" name="username" value="" placeholder="Username" />
+        <div class="input-group">
+          <span class="input-group-addon">
+            <span class="glyphicon glyphicon-user"></span>
+          </span>
+          <input type="text" class="form-control" ng-model="credential.username" name="username" value="" placeholder="Username" />
+        </div>
       </div>
       <div class="form-group">
         <label for="username">Password</label>
-        <input type="password" class="form-control" ng-model="credential.password" name="password" value="" placeholder="Password" />
+        <div class="input-group">
+          <span class="input-group-addon">
+            <span class="glyphicon glyphicon-lock"></span>
+          </span>
+          <input type="password" class="form-control" ng-model="credential.password" name="password" value="" placeholder="Password" />
+        </div>
       </div>
       <div class="pull-right">
-        <button type="submit" name="login" class="btn btn-primary">Submit</button>
+        <button type="submit" name="login" class="btn btn-primary">
+          <span class="glyphicon glyphicon-check"></span> Submit
+        </button>
       </div>
     </form>
   </div>
 
   <div ng-if="validCommentator">
     <div class="alert alert-success text-center">
-      <h1>Login Successful!</h1>
+      <h1><span class="glyphicon glyphicon-ok"></span> Login Successful!</h1>
       <a href="#/">Return to Games List</a>
     </div>
   </div>

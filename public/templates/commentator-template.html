@@ -52,6 +52,7 @@
     <div ng-if="game.snitch.caughtOn !== undefined">
       <div class="alert alert-success">
         <p>
+          <span class="glyphicon glyphicon-off"></span>
           <b>GAME ENDED ON {{ game.snitch.caughtOn }}!</b><br /> Snitch was caught by <b>{{ game.snitch.caughtBy.firstName }} {{ game.snitch.caughtBy.lastName }}</b>.
         </p>
       </div>
@@ -68,9 +69,9 @@
     <br>
   </div>
   <div class="list-group">
-    <a class="list-group-item" href="#/game/{{ game._id }}/box-score">BOX SCORE STATS</a>
+    <a class="list-group-item" href="#/game/{{ game._id }}/box-score"><span class="glyphicon glyphicon-th-large"></span> BOX SCORE STATS</a>
     <br>
-    <a class="list-group-item" href="#/game/{{ game._id }}/play-by-play">PLAY BY PLAY</a>
+    <a class="list-group-item" href="#/game/{{ game._id }}/play-by-play"><span class="glyphicon glyphicon-list"></span> PLAY BY PLAY</a>
   </div>
 </div>
 

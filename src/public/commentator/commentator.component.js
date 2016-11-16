@@ -61,7 +61,7 @@ angular // eslint-disable-line
             } else {
               $('#notification').removeClass().addClass('alert alert-danger')
               $('#notification').fadeIn()
-              $('#notification').html(`<b>Warning!</b> ${response.message}.`)
+              $('#notification').html(`<b><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</b> ${response.message}.`)
               $('#notification').delay(2000).slideUp()
             }
           },
@@ -77,14 +77,14 @@ angular // eslint-disable-line
           dataType: 'json',
           success(response) {
             if (response.status === 'OK') {
-              $('#notification').removeClass().addClass('alert alert-warning')
+              $('#notification').removeClass().addClass('alert alert-<span class="glyphicon glyphicon-exclamation-sign"></span> Warning')
               $('#notification').fadeIn()
               $('#notification').html(`<b>Missed!</b> <mark><b>${response.player}</b></mark> missed a goal.`)
               $('#notification').delay(2000).slideUp()
             } else {
               $('#notification').removeClass().addClass('alert alert-danger')
               $('#notification').fadeIn()
-              $('#notification').html(`<b>Warning!</b> ${response.message}.`)
+              $('#notification').html(`<b><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</b> ${response.message}.`)
               $('#notification').delay(2000).slideUp()
             }
           },
@@ -107,7 +107,7 @@ angular // eslint-disable-line
             } else {
               $('#notification').removeClass().addClass('alert alert-danger')
               $('#notification').fadeIn()
-              $('#notification').html(`<b>Warning!</b> ${response.message}.`)
+              $('#notification').html(`<b><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</b> ${response.message}.`)
               $('#notification').delay(2000).slideUp()
             }
           },
@@ -126,11 +126,11 @@ angular // eslint-disable-line
               $(`#${response.teamId}`).html(response.score)
               $('#notification').removeClass().addClass('alert alert-success')
               $('#notification').fadeIn()
-              $('#notification').html(`<b>GAME ENDED ON ${new Date(response.endTime).toLocaleString()}!</b> Snitch was caught by <mark><b>${response.player}</b></mark>.`)
+              $('#notification').html(`<span class="glyphicon glyphicon-off"></span> <b>GAME ENDED ON ${new Date(response.endTime).toLocaleString()}!</b> Snitch was caught by <mark><b>${response.player}</b></mark>.`)
             } else {
               $('#notification').removeClass().addClass('alert alert-danger')
               $('#notification').fadeIn()
-              $('#notification').html(`<b>Warning!</b> ${response.message}.`)
+              $('#notification').html(`<b><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</b> ${response.message}.`)
               $('#notification').delay(2000).slideUp()
             }
           },
@@ -152,7 +152,7 @@ angular // eslint-disable-line
             } else {
               $('#notification').removeClass().addClass('alert alert-danger')
               $('#notification').fadeIn()
-              $('#notification').html(`<b>Warning!</b> ${response.message}.`)
+              $('#notification').html(`<b><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</b> ${response.message}.`)
               $('#notification').delay(2000).slideUp()
             }
           },
