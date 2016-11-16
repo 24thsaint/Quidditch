@@ -106,7 +106,7 @@ angular // eslint-disable-line
       uri = window.location.origin;
     }
 
-    $http.get(uri + '/user/verify').success(function (data) {
+    $http.get(uri + '/user/verify/' + window.localStorage.token).success(function (data) {
       if (data.status === 'FAIL') {
         window.location.href = uri;
       }
@@ -128,7 +128,7 @@ angular // eslint-disable-line
 
     $scope.goal = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/chaser/goal',
+        url: uri + '/game/' + gameId + '/chaser/goal/' + window.localStorage.token,
         type: 'POST',
         data: JSON.stringify({ chaser: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -152,7 +152,7 @@ angular // eslint-disable-line
 
     $scope.miss = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/chaser/miss',
+        url: uri + '/game/' + gameId + '/chaser/miss/' + window.localStorage.token,
         type: 'POST',
         data: JSON.stringify({ chaser: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -175,7 +175,7 @@ angular // eslint-disable-line
 
     $scope.block = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/keeper/block',
+        url: uri + '/game/' + gameId + '/keeper/block/' + window.localStorage.token,
         type: 'POST',
         data: JSON.stringify({ keeper: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -198,7 +198,7 @@ angular // eslint-disable-line
 
     $scope.end = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/seeker/catchSnitch',
+        url: uri + '/game/' + gameId + '/seeker/catchSnitch/' + window.localStorage.token,
         type: 'POST',
         data: JSON.stringify({ seeker: currentPlayer }),
         contentType: 'application/json; charset=utf-8',
@@ -221,7 +221,7 @@ angular // eslint-disable-line
 
     $scope.snitchAppeared = function () {
       $.ajax({
-        url: uri + '/game/' + gameId + '/snitch/appeared',
+        url: uri + '/game/' + gameId + '/snitch/appeared/' + window.localStorage.token,
         type: 'POST',
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
@@ -273,7 +273,7 @@ angular.module('home').component('home', {
       uri = window.location.origin;
     }
 
-    $http.get(uri + '/user/verify').success(function (data) {
+    $http.get(uri + '/user/verify/' + window.localStorage.token).success(function (data) {
       if (data.status === 'FAIL') {
         $scope.validCommentator = false;
       } else {
@@ -320,7 +320,7 @@ angular.module('login').component('login', {
       uri = window.location.origin;
     }
 
-    $http.get(uri + '/user/verify').success(function (data) {
+    $http.get(uri + '/user/verify/' + window.localStorage.token).success(function (data) {
       if (data.status === 'FAIL') {
         $scope.validCommentator = false;
       } else {
@@ -331,11 +331,7 @@ angular.module('login').component('login', {
     $scope.submit = function () {
       $http.post(uri + '/user/login', $scope.credential).success(function (data) {
         // document.cookie = `token=${data.token}`
-        window.localStorage.cookie = data.token;
-
-        console.log('=================================');
-        console.log(window.localStorage.cookie);
-        console.log('=================================');
+        window.localStorage.token = data.token;
 
         if (data.status === 'OK') {
           $scope.validCommentator = true;

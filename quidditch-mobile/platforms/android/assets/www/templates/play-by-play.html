@@ -1,6 +1,6 @@
 <div class="col-md-4">
   <div class="text-center">
-    <h1 class="well">Play by Play Statistics</h1>
+    <h1 class="well"><span class="glyphicon glyphicon-list"></span> Play by Play Statistics</h1>
   </div>
 </div>
 <div class="col-md-8">
@@ -15,12 +15,12 @@
         {{ history.eventType === 'snitchAppears' ? 'bg-primary' : '' }}
         {{ history.eventType === 'end' ? 'bg-danger' : '' }}
         ">
-        {{ history.eventType === 'goal' ? history.time + ' - Goal made by ' + history.player.firstName + ' ' + history.player.lastName : '' }}
-        {{ history.eventType === 'miss' ? history.time + ' - Goal missed by ' + history.player.firstName + ' ' + history.player.lastName : '' }}
-        {{ history.eventType === 'block' ? history.time + ' - Goal attempt blocked by ' + history.player.firstName + ' ' + history.player.lastName : '' }}
-        {{ history.eventType === 'start' ? history.time + ' - GAME HAS STARTED!' : '' }}
-        {{ history.eventType === 'snitchAppears' ? history.time + ' - SNITCH HAS APPEARED!' : '' }}
-        {{ history.eventType === 'end' ? history.time + ' - Snitch caught by ' + history.player.firstName + ' ' + history.player.lastName + '. GAME HAS ENDED!' : '' }}
+        <span class="lead">{{ history.time }}</span> - {{ history.eventType === 'goal' ? 'Goal made by ' + history.player.firstName + ' ' + history.player.lastName : '' }}
+        {{ history.eventType === 'miss' ? 'Goal missed by ' + history.player.firstName + ' ' + history.player.lastName : '' }}
+        {{ history.eventType === 'block' ? 'Goal attempt blocked by ' + history.player.firstName + ' ' + history.player.lastName : '' }}
+        {{ history.eventType === 'start' ? 'GAME HAS STARTED!' : '' }}
+        {{ history.eventType === 'snitchAppears' ? 'SNITCH HAS APPEARED!' : '' }}
+        {{ history.eventType === 'end' ? 'Snitch caught by ' + history.player.firstName + ' ' + history.player.lastName + '. GAME HAS ENDED!' : '' }}
       </td>
     </tr>
   </tbody>
