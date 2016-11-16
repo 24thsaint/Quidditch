@@ -96,26 +96,26 @@ teams.push(blueTeam)
 const snitch = new Snitch()
 snitch.save()
   .then(() => {
-    for (const player of team1) {
+    team1.forEach((player) => {
       player.save()
-    }
+    })
 
-    for (const player of team2) {
+    team2.forEach((player) => {
       player.save()
-    }
+    })
 
     redTeam.save()
     blueTeam.save()
 
-    for (const player of team1) {
-      player.team = redTeam
+    team1.forEach((player) => {
+      player.team = redTeam // eslint-disable-line
       player.save()
-    }
+    })
 
-    for (const player of team2) {
-      player.team = blueTeam
+    team2.forEach((player) => {
+      player.team = blueTeam // eslint-disable-line
       player.save()
-    }
+    })
 
     const game = new Game({ teams, snitch })
     game.start()
