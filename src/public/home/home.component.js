@@ -9,12 +9,24 @@ angular
     controller: ['$routeParams', '$http', '$scope',
       ($routeParams, $http, $scope) => {
         let uri = ''
+        $scope.validCommentator = false
 
         if (window.cordova) {
           uri = process.env.DARK_MAGIC
         } else {
           uri = window.location.origin
         }
+
+        $http.get(
+          `${uri}/user/verify`,
+        )
+        .success((data) => {
+          if (data.status === 'FAIL') {
+            $scope.validCommentator = false
+          } else {
+            $scope.validCommentator = true
+          }
+        })
 
         $http.get(`${uri}/games/list`)
           .success((data) => {

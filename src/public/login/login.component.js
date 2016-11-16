@@ -9,7 +9,7 @@ angular
     controller: ['$routeParams', '$http', '$scope',
       ($routeParams, $http, $scope) => {
         $scope.credential = {}
-        $scope.hasUser = false
+        $scope.validCommentator = false
         $scope.error = ''
         $scope.isLoginFailed = false
 
@@ -21,6 +21,17 @@ angular
           uri = window.location.origin
         }
 
+        $http.get(
+          `${uri}/user/verify`,
+        )
+        .success((data) => {
+          if (data.status === 'FAIL') {
+            $scope.validCommentator = false
+          } else {
+            $scope.validCommentator = true
+          }
+        })
+
         $scope.submit = () => {
           $http.post(
             `${uri}/user/login`,
@@ -29,7 +40,7 @@ angular
           .success((data) => {
             document.cookie = `token=${data.token}`
             if (data.status === 'OK') {
-              $scope.hasUser = true
+              $scope.validCommentator = true
             } else {
               $scope.error = data.message
               $scope.isLoginFailed = true

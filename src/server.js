@@ -27,10 +27,11 @@ app.use(cors())
 // =============== TOKENS
 
 const tokens = ['123']
+const clientTokens = {}
 
 function generateToken(user) {
   const token = sha256(user._id + new Date().getTime()) // eslint-disable-line
-  tokens.push({ token: user })
+  clientTokens[token] = user
   return token
 }
 
@@ -88,6 +89,22 @@ app.post('/user/login', (request, response) => {
         message: err.message,
       }))
     })
+})
+
+app.get('/user/verify', (request, response) => {
+  let jsonResponse
+  const valid = clientTokens[request.cookies.token]
+  if (valid) {
+    jsonResponse = Object.assign({}, valid)
+    delete jsonResponse.password
+    delete jsonResponse._id // eslint-disable-line
+    response.end(JSON.stringify(jsonResponse))
+  } else {
+    response.end(JSON.stringify({
+      status: 'FAIL',
+      message: 'Token is invalid',
+    }))
+  }
 })
 
 app.get('/games/list', (request, response) => {

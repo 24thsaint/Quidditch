@@ -20,6 +20,15 @@ angular // eslint-disable-line
         uri = window.location.origin
       }
 
+      $http.get(
+        `${uri}/user/verify`,
+      )
+      .success((data) => {
+        if (data.status === 'FAIL') {
+          window.location.href = uri
+        }
+      })
+
       $http.get(`${uri}/game/find/${gameId}`)
         .success((data) => {
           if (data.snitch.caughtOn !== undefined) {

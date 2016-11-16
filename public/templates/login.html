@@ -6,7 +6,7 @@
 
 <div class="col-md-4"></div>
 <div class="col-md-4">
-  <div ng-if="!hasUser">
+  <div ng-if="!validCommentator">
     <div ng-if="isLoginFailed" class="alert alert-danger text-center">
       {{ error }}
     </div>
@@ -26,8 +26,8 @@
     </form>
   </div>
 
-  <div ng-if="hasUser">
-    <div class="alert alert-success text-center"> 
+  <div ng-if="validCommentator">
+    <div class="alert alert-success text-center">
       <h1>Login Successful!</h1>
     </div>
   </div>
