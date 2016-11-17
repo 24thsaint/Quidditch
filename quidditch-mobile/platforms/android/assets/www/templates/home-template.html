@@ -2,6 +2,9 @@
   <div ng-if="!validCommentator" class="pull-right">
     <a href="#/login"><span class="glyphicon glyphicon-lock"></span> Commentator Login</a>
   </div>
+  <div ng-if="validCommentator" class="pull-right">
+    <a href="" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+  </div>
   <br />
   <div class="well text-center">
     <h1><h1><span class="glyphicon glyphicon-flash"></span> Games</h1>

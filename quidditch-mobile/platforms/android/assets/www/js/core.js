@@ -5,15 +5,15 @@
 
 angular.module('app').config(['$locationProvider', '$routeProvider', function config($locationProvider, $routeProvider) {
   $routeProvider.when('/', {
-    template: '<home>Loading...</home>'
+    template: '<home></home>'
   }).when('/game/:gameId', {
-    template: '<commentator>Loading...</commentator>'
+    template: '<commentator></commentator>'
   }).when('/game/:gameId/box-score', {
-    template: '<box>Loading...</box>'
+    template: '<box></box>'
   }).when('/game/:gameId/play-by-play', {
-    template: '<playbyplay>Loading...</playbyplay>'
+    template: '<playbyplay></playbyplay>'
   }).when('/login', {
-    template: '<login>Loading...</login>'
+    template: '<login></login>'
   }).otherwise('/');
 }]);
 
@@ -48,7 +48,7 @@ angular.module('box').component('box', {
 
     $http.get(uri + '/game/find/' + gameId).success(function (data) {
       data.teams.forEach(function (team) {
-        $http.get(uri + '/team/find/' + team._id) // eslint-disable-line
+        $http.get(uri + '/team/find/' + team._id) // eslint-disable-line no-underscore-dangle
         .success(function (teamData) {
           $scope.teams.push(teamData);
         });
@@ -90,8 +90,7 @@ angular.module('box', ['ngRoute']);
 /* global $, angular */
 /* eslint-disable no-param-reassign */
 
-angular // eslint-disable-line
-.module('commentator').component('commentator', {
+angular.module('commentator').component('commentator', {
   templateUrl: 'templates/commentator-template.html',
   controller: ['$routeParams', '$http', '$scope', function ($routeParams, $http, $scope) {
     var gameId = $routeParams.gameId;
@@ -119,7 +118,7 @@ angular // eslint-disable-line
       $scope.game = data;
       $scope.teams = [];
       data.teams.forEach(function (team) {
-        $http.get(uri + '/team/find/' + team._id) // eslint-disable-line
+        $http.get(uri + '/team/find/' + team._id) // eslint-disable-line no-underscore-dangle
         .success(function (teamData) {
           $scope.teams.push(teamData);
         });
@@ -143,7 +142,7 @@ angular // eslint-disable-line
           } else {
             $('#notification').removeClass().addClass('alert alert-danger');
             $('#notification').fadeIn();
-            $('#notification').html('<b>Warning!</b> ' + response.message + '.');
+            $('#notification').html('<b><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</b> ' + response.message + '.');
             $('#notification').delay(2000).slideUp();
           }
         }
@@ -166,7 +165,7 @@ angular // eslint-disable-line
           } else {
             $('#notification').removeClass().addClass('alert alert-danger');
             $('#notification').fadeIn();
-            $('#notification').html('<b>Warning!</b> ' + response.message + '.');
+            $('#notification').html('<b><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</b> ' + response.message + '.');
             $('#notification').delay(2000).slideUp();
           }
         }
@@ -189,7 +188,7 @@ angular // eslint-disable-line
           } else {
             $('#notification').removeClass().addClass('alert alert-danger');
             $('#notification').fadeIn();
-            $('#notification').html('<b>Warning!</b> ' + response.message + '.');
+            $('#notification').html('<b><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</b> ' + response.message + '.');
             $('#notification').delay(2000).slideUp();
           }
         }
@@ -208,11 +207,11 @@ angular // eslint-disable-line
             $('#' + response.teamId).html(response.score);
             $('#notification').removeClass().addClass('alert alert-success');
             $('#notification').fadeIn();
-            $('#notification').html('<b>GAME ENDED ON ' + new Date(response.endTime).toLocaleString() + '!</b> Snitch was caught by <mark><b>' + response.player + '</b></mark>.');
+            $('#notification').html('<span class="glyphicon glyphicon-off"></span> <b>GAME ENDED ON ' + new Date(response.endTime).toLocaleString() + '!</b> Snitch was caught by <mark><b>' + response.player + '</b></mark>.');
           } else {
             $('#notification').removeClass().addClass('alert alert-danger');
             $('#notification').fadeIn();
-            $('#notification').html('<b>Warning!</b> ' + response.message + '.');
+            $('#notification').html('<b><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</b> ' + response.message + '.');
             $('#notification').delay(2000).slideUp();
           }
         }
@@ -234,7 +233,7 @@ angular // eslint-disable-line
           } else {
             $('#notification').removeClass().addClass('alert alert-danger');
             $('#notification').fadeIn();
-            $('#notification').html('<b>Warning!</b> ' + response.message + '.');
+            $('#notification').html('<b><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</b> ' + response.message + '.');
             $('#notification').delay(2000).slideUp();
           }
         }
@@ -251,8 +250,9 @@ angular // eslint-disable-line
 },{}],6:[function(require,module,exports){
 'use strict';
 
-angular.module('commentator', [// eslint-disable-line
-'ngRoute']);
+/* global angular */
+
+angular.module('commentator', ['ngRoute']);
 
 },{}],7:[function(require,module,exports){
 'use strict';
@@ -273,6 +273,11 @@ angular.module('home').component('home', {
       uri = window.location.origin;
     }
 
+    $scope.logout = function () {
+      window.localStorage.clear();
+      $scope.validCommentator = false;
+    };
+
     $http.get(uri + '/user/verify/' + window.localStorage.token).success(function (data) {
       if (data.status === 'FAIL') {
         $scope.validCommentator = false;
@@ -284,7 +289,7 @@ angular.module('home').component('home', {
     $http.get(uri + '/games/list').success(function (data) {
       $scope.games = data;
     }).error(function (data) {
-      console.log('ERROR: ' + data); // eslint-disable-line
+      console.log('ERROR: ' + data); // eslint-disable-line no-console
     });
   }]
 });
@@ -380,7 +385,7 @@ angular.module('playbyplay').component('playbyplay', {
       });
       $scope.game = data;
     }).error(function (data) {
-      console.log('ERROR: ' + data); // eslint-disable-line
+      console.log('ERROR: ' + data); // eslint-disable-line no-console
     });
 
     var host = '';
@@ -399,22 +404,22 @@ angular.module('playbyplay').component('playbyplay', {
       if (play.type === 'PLAY-BY-PLAY') {
         switch (play.eventType) {
           case 'start':
-            $('#plays > tbody:last-child').append('<tr><td class="bg-danger">' + new Date(play.time).toLocaleString() + ' - GAME HAS STARTED!</td></tr>');
+            $('#plays > tbody:last-child').append('<tr><td class="bg-danger"><span class="lead">' + new Date(play.time).toLocaleString() + '</span> - GAME HAS STARTED!</td></tr>');
             break;
           case 'end':
-            $('#plays > tbody:last-child').append('<tr><td class="bg-danger">' + new Date(play.time).toLocaleString() + ' - Snitch caught by ' + play.player.firstName + ' ' + play.player.lastName + '. GAME HAS ENDED!</td></tr>');
+            $('#plays > tbody:last-child').append('<tr><td class="bg-danger"><span class="lead">' + new Date(play.time).toLocaleString() + '</span> - Snitch caught by ' + play.player.firstName + ' ' + play.player.lastName + '. GAME HAS ENDED!</td></tr>');
             break;
           case 'goal':
-            $('#plays > tbody:last-child').append('<tr><td class="bg-success">' + new Date(play.time).toLocaleString() + ' - Goal made by ' + play.player.firstName + ' ' + play.player.lastName + '</td></tr>');
+            $('#plays > tbody:last-child').append('<tr><td class="bg-success"><span class="lead">' + new Date(play.time).toLocaleString() + '</span> - Goal made by ' + play.player.firstName + ' ' + play.player.lastName + '</td></tr>');
             break;
           case 'miss':
-            $('#plays > tbody:last-child').append('<tr><td class="bg-warning">' + new Date(play.time).toLocaleString() + ' - Goal missed by ' + play.player.firstName + ' ' + play.player.lastName + '</td></tr>');
+            $('#plays > tbody:last-child').append('<tr><td class="bg-warning"><span class="lead">' + new Date(play.time).toLocaleString() + '</span> - Goal missed by ' + play.player.firstName + ' ' + play.player.lastName + '</td></tr>');
             break;
           case 'block':
-            $('#plays > tbody:last-child').append('<tr><td class="bg-info">' + new Date(play.time).toLocaleString() + ' - Goal attempt blocked by ' + play.player.firstName + ' ' + play.player.lastName + '</td></tr>');
+            $('#plays > tbody:last-child').append('<tr><td class="bg-info"><span class="lead">' + new Date(play.time).toLocaleString() + '</span> - Goal attempt blocked by ' + play.player.firstName + ' ' + play.player.lastName + '</td></tr>');
             break;
           case 'snitchAppears':
-            $('#plays > tbody:last-child').append('<tr><td class="bg-primary">' + new Date(play.time).toLocaleString() + ' - SNITCH HAS APPEARED!</td></tr>');
+            $('#plays > tbody:last-child').append('<tr><td class="bg-primary"><span class="lead">' + new Date(play.time).toLocaleString() + '</span> - SNITCH HAS APPEARED!</td></tr>');
             break;
           default:
         }
