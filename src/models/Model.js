@@ -23,8 +23,8 @@ class Model {
   }
 
   static load(name, modelClass) {
-    modelClass._schema.plugin(loadClass, modelClass) // eslint-disable-line
-    return mongoose.model(name, modelClass._schema) // eslint-disable-line
+    modelClass._schema.plugin(loadClass, modelClass) // eslint-disable-line no-underscore-dangle
+    return mongoose.model(name, modelClass._schema) // eslint-disable-line no-underscore-dangle
   }
 }
 

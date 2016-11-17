@@ -3,7 +3,7 @@ import Model from './Model'
 
 class Team extends Model {
 
-  static _schema = mongoose.Schema({ // eslint-disable-line
+  static _schema = mongoose.Schema({
     name: { type: String },
     players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }],
   })

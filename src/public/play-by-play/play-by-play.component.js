@@ -25,7 +25,7 @@ angular
           $scope.game = data
         })
         .error((data) => {
-          console.log(`ERROR: ${data}`) // eslint-disable-line
+          console.log(`ERROR: ${data}`) // eslint-disable-line no-console
         })
 
       let host = ''

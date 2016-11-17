@@ -1,3 +1,5 @@
-angular.module('commentator', [ // eslint-disable-line
+/* global angular */
+
+angular.module('commentator', [
   'ngRoute',
 ])

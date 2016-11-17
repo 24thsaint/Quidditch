@@ -3,7 +3,7 @@ import Model from './Model'
 
 class Game extends Model {
 
-  static _schema = mongoose.Schema({  // eslint-disable-line
+  static _schema = mongoose.Schema({
     teams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],
     snitch: { type: mongoose.Schema.Types.ObjectId, ref: 'Snitch' },
     playHistory: [{

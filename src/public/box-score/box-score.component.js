@@ -22,7 +22,7 @@ angular
       $http.get(`${uri}/game/find/${gameId}`)
         .success((data) => {
           data.teams.forEach((team) => {
-            $http.get(`${uri}/team/find/${team._id}`) // eslint-disable-line
+            $http.get(`${uri}/team/find/${team._id}`) // eslint-disable-line no-underscore-dangle
             .success((teamData) => {
               $scope.teams.push(teamData)
             })

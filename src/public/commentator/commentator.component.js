@@ -2,7 +2,7 @@
 /* global $, angular */
 /* eslint-disable no-param-reassign */
 
-angular // eslint-disable-line
+angular
 .module('commentator')
 .component('commentator', {
   templateUrl: 'templates/commentator-template.html',
@@ -37,7 +37,7 @@ angular // eslint-disable-line
           $scope.game = data
           $scope.teams = []
           data.teams.forEach((team) => {
-            $http.get(`${uri}/team/find/${team._id}`) // eslint-disable-line
+            $http.get(`${uri}/team/find/${team._id}`) // eslint-disable-line no-underscore-dangle
             .success((teamData) => {
               $scope.teams.push(teamData)
             })

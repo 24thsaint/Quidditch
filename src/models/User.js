@@ -4,7 +4,7 @@ import Model from './Model'
 
 class User extends Model {
 
-  static _schema = mongoose.Schema({ // eslint-disable-line
+  static _schema = mongoose.Schema({
     username: { type: String, unique: true },
     password: { type: String },
     firstName: { type: String },
@@ -14,7 +14,7 @@ class User extends Model {
   encryptPassword() {
     const salt = bcrypt.genSaltSync()
     const hash = bcrypt.hashSync(this.password, salt)
-    this.password = hash //eslint-disable-line    
+    this.password = hash
   }
 
 }

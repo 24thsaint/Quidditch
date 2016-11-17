@@ -123,12 +123,12 @@ snitch.save()
     blueTeam.save()
 
     team1.forEach((player) => {
-      player.team = redTeam // eslint-disable-line
+      player.team = redTeam // eslint-disable-line no-param-reassign
       player.save()
     })
 
     team2.forEach((player) => {
-      player.team = blueTeam // eslint-disable-line
+      player.team = blueTeam // eslint-disable-line no-param-reassign
       player.save()
     })
 
@@ -136,7 +136,7 @@ snitch.save()
     game.start()
     game.save()
       .then(() => {
-        console.log('Database seed successful')
+        console.log('Database seed successful') // eslint-disable-line no-console
         process.exit()
       })
   })

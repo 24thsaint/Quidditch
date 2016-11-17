@@ -3,7 +3,7 @@ import Model from './Model'
 
 class Snitch extends Model {
 
-  static _schema = mongoose.Schema({ // eslint-disable-line
+  static _schema = mongoose.Schema({
     appearedOn: { type: Date },
     caughtOn: { type: Date },
     caughtBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Player' },

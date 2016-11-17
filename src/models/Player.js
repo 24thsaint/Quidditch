@@ -3,7 +3,7 @@ import Model from './Model'
 
 class Player extends Model {
 
-  static _schema = mongoose.Schema({ // eslint-disable-line
+  static _schema = mongoose.Schema({
     number: { type: Number },
     firstName: { type: String },
     lastName: { type: String },

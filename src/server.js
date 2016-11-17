@@ -28,7 +28,7 @@ app.use(cors())
 const clientTokens = {}
 
 function generateToken(user) {
-  const token = sha256(user._id + new Date().getTime()) // eslint-disable-line
+  const token = sha256(user._id + new Date().getTime()) // eslint-disable-line no-underscore-dangle
   clientTokens[token] = user
   return token
 }
@@ -98,7 +98,7 @@ app.get('/user/verify/:token', (request, response) => {
   if (valid) {
     jsonResponse = Object.assign({}, valid)
     delete jsonResponse.password
-    delete jsonResponse._id // eslint-disable-line
+    delete jsonResponse._id // eslint-disable-line no-underscore-dangle
     response.end(JSON.stringify(jsonResponse))
   } else {
     respondAsFailed(response, 'TOKEN IS INVALID')
@@ -221,7 +221,7 @@ app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
         if (player.team.name === team.name) {
           jsonResponse.team = team.name
           jsonResponse.score = team.score
-          jsonResponse.teamId = team._id // eslint-disable-line
+          jsonResponse.teamId = team._id // eslint-disable-line no-underscore-dangle
         }
       })
 
@@ -351,7 +351,7 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
     })
     .then((teams) => {
       sendBoxScoreSocketResponse(teams)
-      return Team.findOne({ _id: seeker.team }).populate('players').exec() // eslint-disable-line
+      return Team.findOne({ _id: seeker.team }).populate('players').exec()
     })
     .then((team) => {
       const jsonResponse = JSON.stringify({
@@ -359,7 +359,7 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
         player: `${seeker.firstName} ${seeker.lastName}`,
         endTime: game.endTime,
         score: team.score,
-        teamId: team._id, // eslint-disable-line
+        teamId: team._id, // eslint-disable-line no-underscore-dangle
       })
       response.end(jsonResponse)
     })
@@ -413,7 +413,7 @@ app.post('/game/start/:token', (request, response) => {
       const socketResponse = game.start()
       sendPlayByPlaySocketResponse(socketResponse)
       game.save()
-      response.redirect(`/game/${game._id}`) // eslint-disable-line
+      response.redirect(`/game/${game._id}`) // eslint-disable-line no-underscore-dangle
     })
     .catch((err) => {
       respondAsFailed(response, err.message)
@@ -432,4 +432,4 @@ app.get('*', (request, response) => {
 // ================
 server.on('request', app)
 server.listen(process.env.PORT || 1234)
-console.log('Server running over port 1234') // eslint-disable-line
+console.log('Server running over port 1234') // eslint-disable-line no-console
