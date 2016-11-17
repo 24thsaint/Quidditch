@@ -77,7 +77,7 @@ angular // eslint-disable-line
           dataType: 'json',
           success(response) {
             if (response.status === 'OK') {
-              $('#notification').removeClass().addClass('alert alert-<span class="glyphicon glyphicon-exclamation-sign"></span> Warning')
+              $('#notification').removeClass().addClass('alert alert-warning')
               $('#notification').fadeIn()
               $('#notification').html(`<b>Missed!</b> <mark><b>${response.player}</b></mark> missed a goal.`)
               $('#notification').delay(2000).slideUp()

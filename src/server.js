@@ -1,6 +1,5 @@
 import http from 'http'
 import express from 'express'
-import fs from 'fs'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
@@ -63,31 +62,34 @@ function sendPlayByPlaySocketResponse(response) {
   })
 }
 
+function respondAsUnauthorized(response) {
+  response.writeHead(401, { 'Content-Type': 'application/json' })
+  response.end(JSON.stringify({ status: 'FAIL', message: 'Unauthorized' }))
+}
+
+function respondAsFailed(response, message) {
+  response.end(JSON.stringify({ status: 'FAIL', message }))
+}
+
 // ================ REST stuff
 
 app.post('/user/login', (request, response) => {
   const auth = request.body
   User.findOne({ username: auth.username }).exec()
-    .then((user) => {
-      const isAuthorized = bcrypt.compareSync(auth.password, user.password)
-      if (isAuthorized) {
-        response.end(JSON.stringify({
-          status: 'OK',
-          token: generateToken(user),
-        }))
-      } else {
-        response.end(JSON.stringify({
-          status: 'FAIL',
-          message: 'INVALID PASSWORD',
-        }))
-      }
-    })
-    .catch((err) => {
+  .then((user) => {
+    const isAuthorized = bcrypt.compareSync(auth.password, user.password)
+    if (isAuthorized) {
       response.end(JSON.stringify({
-        status: 'FAIL',
-        message: err.message,
+        status: 'OK',
+        token: generateToken(user),
       }))
-    })
+    } else {
+      respondAsFailed(response, 'INVALID PASSWORD')
+    }
+  })
+  .catch((err) => {
+    respondAsFailed(response, err.message)
+  })
 })
 
 app.get('/user/verify/:token', (request, response) => {
@@ -99,10 +101,7 @@ app.get('/user/verify/:token', (request, response) => {
     delete jsonResponse._id // eslint-disable-line
     response.end(JSON.stringify(jsonResponse))
   } else {
-    response.end(JSON.stringify({
-      status: 'FAIL',
-      message: 'Token is invalid',
-    }))
+    respondAsFailed(response, 'TOKEN IS INVALID')
   }
 })
 
@@ -181,7 +180,7 @@ app.get('/team/find/:id', (request, response) => {
     response.end(JSON.stringify(json, null, 2))
   })
   .catch(() => {
-    response.end(JSON.stringify({ message: 'Resource not found' }, null, 2))
+    respondAsFailed(response, 'Resource not found')
   })
 })
 
@@ -194,49 +193,48 @@ app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
     response.writeHead(200, { 'Content-Type': 'application/json' })
 
     if (jsonRequest.chaser === undefined) {
-      response.end(JSON.stringify({ status: 'FAIL', message: 'Player not found' }))
+      respondAsFailed(response, 'Player not found')
     }
 
+    let player
+
     Player.findOne({ _id: jsonRequest.chaser }).populate('team').exec()
-    .then((player) => {
-      Game.findOne({ _id: gameId }).exec()
-      .then((game) => {
-        const socketResponse = game.goalMade(player)
-        sendPlayByPlaySocketResponse(socketResponse)
-        game.save()
-        player.save()
-        return game
-      })
-      .then((game) => {
-        Team.find({ _id: { $in: game.teams } }).populate('players').exec()
-        .then((teams) => {
-          sendBoxScoreSocketResponse(teams)
-          const jsonResponse = {
-            status: 'OK',
-            player: `${player.firstName} ${player.lastName}`,
-          }
+    .then((playerData) => {
+      player = playerData
+      return Game.findOne({ _id: gameId }).exec()
+    })
+    .then((game) => {
+      const socketResponse = game.goalMade(player)
+      sendPlayByPlaySocketResponse(socketResponse)
+      game.save()
+      player.save()
+      return game
+    })
+    .then(game =>
+      Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
+    )
+    .then((teams) => {
+      sendBoxScoreSocketResponse(teams)
+      const jsonResponse = {
+        status: 'OK',
+        player: `${player.firstName} ${player.lastName}`,
+      }
 
-          teams.forEach((team) => {
-            if (player.team.name === team.name) {
-              jsonResponse.team = team.name
-              jsonResponse.score = team.score
-              jsonResponse.teamId = team._id // eslint-disable-line
-            }
-          })
+      teams.forEach((team) => {
+        if (player.team.name === team.name) {
+          jsonResponse.team = team.name
+          jsonResponse.score = team.score
+          jsonResponse.teamId = team._id // eslint-disable-line
+        }
+      })
 
-          response.end(JSON.stringify(jsonResponse))
-        })
-      })
-      .catch((err) => {
-        response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
-      })
+      response.end(JSON.stringify(jsonResponse))
     })
     .catch((err) => {
-      response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
+      respondAsFailed(response, err.message)
     })
   } else {
-    response.writeHead(401, { 'Content-Type': 'application/json' })
-    response.end(JSON.stringify({ status: 'FAIL', message: 'Unauthorized' }))
+    respondAsUnauthorized(response)
   }
 })
 
@@ -249,41 +247,40 @@ app.post('/game/:gameId/chaser/miss/:token', (request, response) => {
     response.writeHead(200, { 'Content-Type': 'application/json' })
 
     if (jsonRequest.chaser === undefined) {
-      response.end(JSON.stringify({ status: 'FAIL', message: 'Player not found' }))
+      respondAsFailed(response, 'Player not found')
     }
 
+    let player
+    let game
+
     Player.findOne({ _id: jsonRequest.chaser }).exec()
-    .then((player) => {
-      Game.findOne({ _id: gameId }).exec()
-      .then((game) => {
-        const socketResponse = game.goalMissed(player)
-        sendPlayByPlaySocketResponse(socketResponse)
-        game.save()
-        player.save()
-        .then(() => {
-          Team.find({ _id: { $in: game.teams } }).populate('players').exec()
-          .then((teams) => {
-            sendBoxScoreSocketResponse(teams)
-          })
-        })
-
-        const jsonResponse = JSON.stringify({
-          status: 'OK',
-          player: `${player.firstName} ${player.lastName}`,
-        })
-
-        response.end(jsonResponse)
+    .then((playerData) => {
+      player = playerData
+      return Game.findOne({ _id: gameId }).exec()
+    })
+    .then((gameData) => {
+      game = gameData
+      const socketResponse = game.goalMissed(player)
+      sendPlayByPlaySocketResponse(socketResponse)
+      game.save()
+      return player.save()
+    })
+    .then(() =>
+      Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
+    )
+    .then((teams) => {
+      sendBoxScoreSocketResponse(teams)
+      const jsonResponse = JSON.stringify({
+        status: 'OK',
+        player: `${player.firstName} ${player.lastName}`,
       })
-      .catch((err) => {
-        response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
-      })
+      response.end(jsonResponse)
     })
     .catch((err) => {
-      response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
+      respondAsFailed(response, err.message)
     })
   } else {
-    response.writeHead(401, { 'Content-Type': 'application/json' })
-    response.end(JSON.stringify({ status: 'FAIL', message: 'Unauthorized' }))
+    respondAsUnauthorized(response)
   }
 })
 
@@ -296,41 +293,40 @@ app.post('/game/:gameId/keeper/block/:token', (request, response) => {
     response.writeHead(200, { 'Content-Type': 'application/json' })
 
     if (jsonRequest.keeper === undefined) {
-      response.end(JSON.stringify({ status: 'FAIL', message: 'Player not found' }))
+      respondAsFailed(response, 'Player not found')
     }
 
+    let player
+
     Player.findOne({ _id: jsonRequest.keeper }).exec()
-    .then((player) => {
-      Game.findOne({ _id: gameId }).exec()
-      .then((game) => {
-        const socketResponse = game.goalBlocked(player)
-        sendPlayByPlaySocketResponse(socketResponse)
-        game.save()
-        player.save()
-        .then(() => {
-          Team.find({ _id: { $in: game.teams } }).populate('players').exec()
-          .then((teams) => {
-            sendBoxScoreSocketResponse(teams)
-          })
-        })
-
-        const jsonResponse = JSON.stringify({
-          status: 'OK',
-          player: `${player.firstName} ${player.lastName}`,
-        })
-
-        response.end(jsonResponse)
+    .then((playerData) => {
+      player = playerData
+      return Game.findOne({ _id: gameId }).exec()
+    })
+    .then((game) => {
+      const socketResponse = game.goalBlocked(player)
+      sendPlayByPlaySocketResponse(socketResponse)
+      game.save()
+      player.save()
+      return game
+    })
+    .then(game =>
+       Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
+    )
+    .then((teams) => {
+      sendBoxScoreSocketResponse(teams)
+      const jsonResponse = JSON.stringify({
+        status: 'OK',
+        player: `${player.firstName} ${player.lastName}`,
       })
-      .catch((err) => {
-        response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
-      })
+
+      response.end(jsonResponse)
     })
     .catch((err) => {
-      response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
+      respondAsFailed(response, err.message)
     })
   } else {
-    response.writeHead(401, { 'Content-Type': 'application/json' })
-    response.end(JSON.stringify({ status: 'FAIL', message: 'Unauthorized' }))
+    respondAsUnauthorized(response)
   }
 })
 
@@ -341,59 +337,47 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
 
   if (clientTokens[token] !== undefined) {
     if (jsonRequest.seeker === undefined) {
-      response.end(JSON.stringify({ status: 'FAIL', message: 'Player not found' }))
+      respondAsFailed(response, 'Player not found')
     }
 
+    let game
+    let seeker
+
     Game.findOne({ _id: gameId }).populate('snitch').exec()
-    .then((game) => {
-      Player.findOne({ _id: jsonRequest.seeker }).exec()
-      .then((seeker) => {
-        const socketResponse = game.snitchCaught(seeker)
-        sendPlayByPlaySocketResponse(socketResponse)
-
-        game.snitch.save()
-        .then(() => {
-          seeker.save()
-        })
-        .then(() => {
-          game.save()
-          .then(() => {
-            Team.find({ _id: { $in: game.teams } }).populate('players').exec()
-            .then((teams) => {
-              sendBoxScoreSocketResponse(teams)
-            })
-          })
-
-          Team.findOne({ _id: seeker.team }).populate('players').exec() // eslint-disable-line
-          .then((team) => {
-            const jsonResponse = JSON.stringify({
-              status: 'OK',
-              player: `${seeker.firstName} ${seeker.lastName}`,
-              endTime: game.endTime,
-              score: team.score,
-              teamId: team._id, // eslint-disable-line
-            })
-
-            response.end(jsonResponse)
-          })
-          .catch((err) => {
-            response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
-          })
-        })
-        .catch((err) => {
-          response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
-        })
+    .then((gameData) => {
+      game = gameData
+      return Player.findOne({ _id: jsonRequest.seeker }).exec()
+    })
+    .then((seekerData) => {
+      seeker = seekerData
+      const socketResponse = game.snitchCaught(seeker)
+      sendPlayByPlaySocketResponse(socketResponse)
+      game.snitch.save()
+      seeker.save()
+      return game.save()
+    })
+    .then(() =>
+       Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
+    )
+    .then((teams) => {
+      sendBoxScoreSocketResponse(teams)
+      return Team.findOne({ _id: seeker.team }).populate('players').exec() // eslint-disable-line
+    })
+    .then((team) => {
+      const jsonResponse = JSON.stringify({
+        status: 'OK',
+        player: `${seeker.firstName} ${seeker.lastName}`,
+        endTime: game.endTime,
+        score: team.score,
+        teamId: team._id, // eslint-disable-line
       })
-      .catch((err) => {
-        response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
-      })
+      response.end(jsonResponse)
     })
     .catch((err) => {
-      response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
+      respondAsFailed(response, err.message)
     })
   } else {
-    response.writeHead(401, { 'Content-Type': 'application/json' })
-    response.end(JSON.stringify({ status: 'FAIL', message: 'Unauthorized' }))
+    respondAsUnauthorized(response)
   }
 })
 
@@ -407,23 +391,21 @@ app.post('/game/:gameId/snitch/appeared/:token', (request, response) => {
       const socketResponse = game.snitchAppeared()
       sendPlayByPlaySocketResponse(socketResponse)
       game.snitch.save()
-      .then(() => {
-        game.save()
-
-        const jsonResponse = JSON.stringify({
-          status: 'OK',
-          appearanceDate: game.snitch.appearedOn,
-        })
-
-        response.end(jsonResponse)
+      return game
+    })
+    .then((game) => {
+      game.save()
+      const jsonResponse = JSON.stringify({
+        status: 'OK',
+        appearanceDate: game.snitch.appearedOn,
       })
+      response.end(jsonResponse)
     })
     .catch((err) => {
-      response.end(JSON.stringify({ status: 'FAIL', message: err.message }))
+      respondAsFailed(response, err.message)
     })
   } else {
-    response.writeHead(401, { 'Content-Type': 'application/json' })
-    response.end(JSON.stringify({ status: 'FAIL', message: 'Unauthorized' }))
+    respondAsUnauthorized(response)
   }
 })
 
@@ -443,52 +425,17 @@ app.post('/game/start/:token', (request, response) => {
       })
       const socketResponse = game.start()
       sendPlayByPlaySocketResponse(socketResponse)
-      game.save()
-      .then(() => {
-        response.redirect(`/game/${game._id}`) // eslint-disable-line
-      })
-      .catch((err) => {
-        response.end(JSON.stringify({ status: 'FAIL', message: err }))
-      })
+      return game.save()
+    })
+    .then(() => {
+      response.redirect(`/game/${game._id}`) // eslint-disable-line
+    })
+    .catch((err) => {
+      respondAsFailed(response, err.message)
     })
   } else {
-    response.writeHead(401, { 'Content-Type': 'application/json' })
-    response.end(JSON.stringify({ status: 'FAIL', message: 'Unauthorized' }))
+    respondAsUnauthorized(response)
   }
-})
-
-// ================ 3rd Party Libraries
-app.get('/js/jquery.min.js', (request, response) => {
-  fs.readFile('./node_modules/jquery/dist/jquery.min.js', (err, data) => {
-    if (err) {
-      response.send(err)
-    } else {
-      response.writeHead(200, { 'Content-Type': 'text/javascript' })
-      response.end(data)
-    }
-  })
-})
-
-app.get('/js/bootstrap.min.js', (request, response) => {
-  fs.readFile('./node_modules/bootstrap/dist/js/bootstrap.min.js', (err, data) => {
-    if (err) {
-      response.send(err)
-    } else {
-      response.writeHead(200, { 'Content-Type': 'text/javascript' })
-      response.end(data)
-    }
-  })
-})
-
-app.get('/css/bootstrap.min.css', (request, response) => {
-  fs.readFile('./node_modules/bootstrap/dist/css/bootstrap.min.css', (err, data) => {
-    if (err) {
-      response.send(err)
-    } else {
-      response.writeHead(200, { 'Content-Type': 'text/css' })
-      response.end(data)
-    }
-  })
 })
 
 // ================ ANGULAR STUFF
