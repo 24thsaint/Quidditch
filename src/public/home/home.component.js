@@ -1,4 +1,4 @@
-/* eslint-env browser */
+ /* eslint-env browser */
 /* global $, angular */
 /* eslint-disable no-param-reassign */
 
@@ -15,6 +15,11 @@ angular
           uri = process.env.DARK_MAGIC
         } else {
           uri = window.location.origin
+        }
+
+        $scope.logout = () => {
+          window.localStorage.clear()
+          $scope.validCommentator = false
         }
 
         $http.get(

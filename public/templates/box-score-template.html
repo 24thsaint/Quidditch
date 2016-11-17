@@ -28,7 +28,7 @@
           <td>{{ player.position === 'Chaser' ? player.goals : '-' }}</td>
           <td>{{ player.position === 'Chaser' ? player.goalsMissed : '-' }}</td>
           <td>{{ player.position === 'Keeper' ? player.blocks : '-' }}</td>
-          <td>{{ player.position === 'Seeker' ? player.snitchCaught : '-' }}</td>
+          <td>{{ player.position === 'Seeker' ? player.snitchCaught  ? 'CATCHER' : '-' : '-' }}</td>
           <td>
             {{ player.goals * 10 }}
           </td>
