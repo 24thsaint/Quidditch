@@ -208,11 +208,8 @@ app.post('/game/:gameId/chaser/goal/:token', (request, response) => {
       sendPlayByPlaySocketResponse(socketResponse)
       game.save()
       player.save()
-      return game
+      return Team.find({ _id: { $in: game.teams } }).populate('players').exec()
     })
-    .then(game =>
-      Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
-    )
     .then((teams) => {
       sendBoxScoreSocketResponse(teams)
       const jsonResponse = {
@@ -263,11 +260,9 @@ app.post('/game/:gameId/chaser/miss/:token', (request, response) => {
       const socketResponse = game.goalMissed(player)
       sendPlayByPlaySocketResponse(socketResponse)
       game.save()
-      return player.save()
+      player.save()
+      return Team.find({ _id: { $in: game.teams } }).populate('players').exec()
     })
-    .then(() =>
-      Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
-    )
     .then((teams) => {
       sendBoxScoreSocketResponse(teams)
       const jsonResponse = JSON.stringify({
@@ -308,11 +303,8 @@ app.post('/game/:gameId/keeper/block/:token', (request, response) => {
       sendPlayByPlaySocketResponse(socketResponse)
       game.save()
       player.save()
-      return game
+      return Team.find({ _id: { $in: game.teams } }).populate('players').exec()
     })
-    .then(game =>
-       Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
-    )
     .then((teams) => {
       sendBoxScoreSocketResponse(teams)
       const jsonResponse = JSON.stringify({
@@ -354,11 +346,9 @@ app.post('/game/:gameId/seeker/catchSnitch/:token', (request, response) => {
       sendPlayByPlaySocketResponse(socketResponse)
       game.snitch.save()
       seeker.save()
-      return game.save()
+      game.save()
+      return Team.find({ _id: { $in: game.teams } }).populate('players').exec()
     })
-    .then(() =>
-       Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
-    )
     .then((teams) => {
       sendBoxScoreSocketResponse(teams)
       return Team.findOne({ _id: seeker.team }).populate('players').exec() // eslint-disable-line
@@ -391,9 +381,6 @@ app.post('/game/:gameId/snitch/appeared/:token', (request, response) => {
       const socketResponse = game.snitchAppeared()
       sendPlayByPlaySocketResponse(socketResponse)
       game.snitch.save()
-      return game
-    })
-    .then((game) => {
       game.save()
       const jsonResponse = JSON.stringify({
         status: 'OK',
@@ -425,9 +412,7 @@ app.post('/game/start/:token', (request, response) => {
       })
       const socketResponse = game.start()
       sendPlayByPlaySocketResponse(socketResponse)
-      return game.save()
-    })
-    .then(() => {
+      game.save()
       response.redirect(`/game/${game._id}`) // eslint-disable-line
     })
     .catch((err) => {
