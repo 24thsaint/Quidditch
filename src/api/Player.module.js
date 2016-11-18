@@ -19,6 +19,7 @@ function playerModule(socket) {
     }
 
     let player
+    let game
 
     secrets.resolveSecret(token)
     .then(() =>
@@ -28,13 +29,15 @@ function playerModule(socket) {
       player = playerData
       return Game.findOne({ _id: gameId }).exec()
     })
-    .then((game) => {
+    .then((gameData) => {
+      game = gameData
       const socketResponse = game.goalMade(player)
       socket.sendPlayByPlaySocketResponse(socketResponse)
-      game.save()
-      player.save()
-      return Team.find({ _id: { $in: game.teams } }).populate('players').exec()
+      return Promise.all([game.save(), player.save()])
     })
+    .then(() =>
+       Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
+    )
     .then((teams) => {
       socket.sendBoxScoreSocketResponse(teams)
       const jsonResponse = {
@@ -81,10 +84,11 @@ function playerModule(socket) {
       game = gameData
       const socketResponse = game.goalMissed(player)
       socket.sendPlayByPlaySocketResponse(socketResponse)
-      game.save()
-      player.save()
-      return Team.find({ _id: { $in: game.teams } }).populate('players').exec()
+      return Promise.all([game.save(), player.save()])
     })
+    .then(() =>
+       Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
+    )
     .then((teams) => {
       socket.sendBoxScoreSocketResponse(teams)
       const jsonResponse = JSON.stringify({
@@ -108,6 +112,7 @@ function playerModule(socket) {
     }
 
     let player
+    let game
 
     secrets.resolveSecret(token)
     .then(() =>
@@ -117,20 +122,21 @@ function playerModule(socket) {
       player = playerData
       return Game.findOne({ _id: gameId }).exec()
     })
-    .then((game) => {
+    .then((gameData) => {
+      game = gameData
       const socketResponse = game.goalBlocked(player)
       socket.sendPlayByPlaySocketResponse(socketResponse)
-      game.save()
-      player.save()
-      return Team.find({ _id: { $in: game.teams } }).populate('players').exec()
+      return Promise.all([game.save(), player.save()])
     })
+    .then(() =>
+       Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
+    )
     .then((teams) => {
       socket.sendBoxScoreSocketResponse(teams)
       const jsonResponse = JSON.stringify({
         status: 'OK',
         player: `${player.firstName} ${player.lastName}`,
       })
-
       response.end(jsonResponse)
     })
     .catch((err) => {
@@ -162,11 +168,11 @@ function playerModule(socket) {
       seeker = seekerData
       const socketResponse = game.snitchCaught(seeker)
       socket.sendPlayByPlaySocketResponse(socketResponse)
-      game.snitch.save()
-      seeker.save()
-      game.save()
-      return Team.find({ _id: { $in: game.teams } }).populate('players').exec()
+      return Promise.all([game.save(), seeker.save(), game.snitch.save()])
     })
+    .then(() =>
+       Team.find({ _id: { $in: game.teams } }).populate('players').exec(),
+    )
     .then((teams) => {
       socket.sendBoxScoreSocketResponse(teams)
       return Team.findOne({ _id: seeker.team }).populate('players').exec()
@@ -190,15 +196,19 @@ function playerModule(socket) {
     const token = request.params.token
     const gameId = request.params.gameId
 
+    let game
+
     secrets.resolveSecret(token)
     .then(() =>
        Game.findOne({ _id: gameId }).populate('snitch').exec(),
     )
-    .then((game) => {
+    .then((gameData) => {
+      game = gameData
       const socketResponse = game.snitchAppeared()
       socket.sendPlayByPlaySocketResponse(socketResponse)
-      game.snitch.save()
-      game.save()
+      return Promise.all([game.snitch.save(), game.save()])
+    })
+    .then(() => {
       const jsonResponse = JSON.stringify({
         status: 'OK',
         appearanceDate: game.snitch.appearedOn,
@@ -216,8 +226,10 @@ function playerModule(socket) {
 
     secrets.resolveSecret(token)
     .then(() => {
-      const snitch = new Snitch()
-      snitch.save()
+      const snitchData = new Snitch()
+      return snitchData.save()
+    })
+    .then((snitch) => {
       const game = new Game({
         teams: jsonRequest.teams,
         snitch,
@@ -225,7 +237,9 @@ function playerModule(socket) {
       })
       const socketResponse = game.start()
       socket.sendPlayByPlaySocketResponse(socketResponse)
-      game.save()
+      return game.save()
+    })
+    .then((game) => {
       response.redirect(`/game/${game._id}`) // eslint-disable-line no-underscore-dangle
     })
     .catch((err) => {
