@@ -1,9 +1,10 @@
-Install required dependencies
+1. Install required dependencies
     npm install
-
-1. Compile using
-    npm run watch
-2. Seed database via
+2. Compile using
+    npm run build
+3. Compile client-side JS
+    npm run build:browserify
+4. Seed database
     npm run seed
-3. Run server using
+5. Run server using
     npm start
