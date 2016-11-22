@@ -1,10 +1,10 @@
 1. Install required dependencies
-    npm install
+  - npm install
 2. Compile using
-    npm run build
+  - npm run build
 3. Compile client-side JS
-    npm run build:browserify
+  - npm run build:browserify
 4. Seed database
-    npm run seed
+  - npm run seed
 5. Run server using
-    npm start
+  - npm start
